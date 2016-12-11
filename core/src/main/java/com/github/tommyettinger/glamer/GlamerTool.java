@@ -32,8 +32,8 @@ public class GlamerTool extends ApplicationAdapter {
     public void create() {
         super.create();
         try {
-            FileHandle fontFile = (args.length >= 1 && args[0] != null) ? Gdx.files.local(args[0]) : Gdx.files.local("assets/SourceCodePro-Medium.otf");
-            Font font = Font.createFont(Font.TRUETYPE_FONT, fontFile.file()).deriveFont((args.length >= 2 && args[1] != null) ? Float.parseFloat(args[1]) : 192f);
+            FileHandle fontFile = (args.length >= 1 && args[0] != null) ? Gdx.files.local(args[0]) : Gdx.files.local("assets/DejaVuSansMono.ttf"); //"assets/SourceCodePro-Medium.otf"
+            Font font = Font.createFont(Font.TRUETYPE_FONT, fontFile.file()).deriveFont((args.length >= 2 && args[1] != null) ? Float.parseFloat(args[1]) : 160f);
             BufferedImage tImage = new BufferedImage(256, 256, BufferedImage.TYPE_4BYTE_ABGR);
             Graphics2D tGraphics = tImage.createGraphics();
             tGraphics.setFont(font);
@@ -43,19 +43,13 @@ public class GlamerTool extends ApplicationAdapter {
                 all[i] = i;
             }
             all[0xffff] = 0xffff;
-            int missing = font.getMissingGlyphCode(), skip;
+            int missing = font.getMissingGlyphCode();
             GlyphVector gv = font.createGlyphVector(frc, all), gv2 = font.createGlyphVector(frc, tc);
             Rectangle2D bounds, xBounds;
             CharArray chars = new CharArray(1024);
-            if(gv2.getGlyphCode(0) == missing)
-            {
+            if(gv2.getGlyphCode(0) == missing) {
                 tc[0] = ' ';
                 gv2 = font.createGlyphVector(frc, tc);
-                skip = 32;
-            }
-            else
-            {
-                skip = 0x253C;
             }
             bounds = gv2.getVisualBounds();
 
@@ -72,18 +66,42 @@ public class GlamerTool extends ApplicationAdapter {
             else
             {
                 xBounds = gv2.getVisualBounds();
-            }
+            }/*
+            Character.UnicodeBlock ub;
+            for (int i = 32; i <= 0xffff; i++) {
+                if(gv.getGlyphCode(i) != missing)
+                {
+                    ub = Character.UnicodeBlock.of(i);
+                    if(ub != Character.UnicodeBlock.ARABIC
+                            && ub != Character.UnicodeBlock.ARABIC_PRESENTATION_FORMS_A
+                            && ub != Character.UnicodeBlock.ARABIC_PRESENTATION_FORMS_B)
+                        chars.add((char)i);
+                }
+            }*/
 
             for (int i = 32; i <= 0xffff; i++) {
                 if(gv.getGlyphCode(i) != missing)
                 {
-                    chars.add((char)i);
-                    /*
-                    tc[0] = (char)i;
-                    bounds = bounds.createUnion(font.createGlyphVector(frc, tc).getLogicalBounds());
-                    */
+                    switch (Character.getDirectionality(i))
+                    {
+                        case Character.DIRECTIONALITY_LEFT_TO_RIGHT:
+                        case Character.DIRECTIONALITY_EUROPEAN_NUMBER:
+                        case Character.DIRECTIONALITY_EUROPEAN_NUMBER_SEPARATOR:
+                        case Character.DIRECTIONALITY_EUROPEAN_NUMBER_TERMINATOR:
+                        case Character.DIRECTIONALITY_BOUNDARY_NEUTRAL:
+                        case Character.DIRECTIONALITY_COMMON_NUMBER_SEPARATOR:
+                        case Character.DIRECTIONALITY_LEFT_TO_RIGHT_EMBEDDING:
+                        case Character.DIRECTIONALITY_LEFT_TO_RIGHT_OVERRIDE:
+                        case Character.DIRECTIONALITY_OTHER_NEUTRALS:
+                        case Character.DIRECTIONALITY_PARAGRAPH_SEPARATOR:
+                        case Character.DIRECTIONALITY_WHITESPACE:
+                        case Character.DIRECTIONALITY_UNDEFINED:
+                        case Character.DIRECTIONALITY_SEGMENT_SEPARATOR:
+                            chars.add((char)i);
+                    }
                 }
             }
+
             int bw = ((16 + (int)bounds.getWidth()) >> 3) << 3, bh = ((16 + (int)(bounds.getHeight() + 0.5)) >> 3) << 3,
                     width = 8192 / bw, height = 8192 / bh, baseline = (int)(bh + xBounds.getMinY()+7.999);
             StringBuilder sb = new StringBuilder(0x10000);
@@ -114,12 +132,16 @@ public class GlamerTool extends ApplicationAdapter {
                             .append(" xoffset=-1 yOffset=-1 xadvance=").append((bw>>3)).append(" page=0 chnl=15\n");
                 }
             }
+            if(i < chars.size)
+                System.out.println("Too many chars!");
+            System.out.println("Showed " + i + " chars out of " + chars.size);
             //ImageIO.write(image, "PNG", new File(fontFile.nameWithoutExtension() + ".png"));
             DistanceFieldGenerator dfg = new DistanceFieldGenerator();
             dfg.setDownscale(8);
             dfg.setSpread(32f);
             ImageIO.write(dfg.generateDistanceField(image), "PNG", new File(fontFile.nameWithoutExtension() + "-distance.png"));
             Gdx.files.local(fontFile.nameWithoutExtension() + "-distance.fnt").writeString(sb.toString(), false);
+            Gdx.files.local(fontFile.nameWithoutExtension() + "-contents.txt").writeString(String.copyValueOf(chars.toArray()), false);
         } catch (FontFormatException e) {
             e.printStackTrace();
         } catch (IOException e) {
