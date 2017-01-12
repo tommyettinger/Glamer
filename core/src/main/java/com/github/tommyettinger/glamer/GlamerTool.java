@@ -3,6 +3,7 @@ package com.github.tommyettinger.glamer;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tools.distancefield.DistanceFieldGenerator;
 import com.badlogic.gdx.utils.CharArray;
 import com.badlogic.gdx.utils.StringBuilder;
@@ -33,8 +34,13 @@ public class GlamerTool extends ApplicationAdapter {
         super.create();
         try {
             int downscale = 3, mainSize = 2048, bigSize = mainSize << downscale;
-            FileHandle fontFile = (args.length >= 1 && args[0] != null) ? Gdx.files.local(args[0]) : Gdx.files.local("assets/Galaxsea-Starlight-Mono-v3_1.ttf"); //"assets/SourceCodePro-Medium.otf"
-            Font font = Font.createFont(Font.TRUETYPE_FONT, fontFile.file()).deriveFont((args.length >= 2 && args[1] != null) ? Float.parseFloat(args[1]) : 64f * 13f);
+            float fontSize = 12f;
+            FileHandle fontFile = (args.length >= 1 && args[0] != null) ? Gdx.files.local(args[0]) : Gdx.files.local("assets/Galaxsea-Starlight-Mono-v3_1.ttf");
+            // "assets/SourceCodePro-Medium.otf" // fontSize 6.5f
+            // "assets/DejaVuSansMono.ttf" // fontSize 4.75f
+            // "assets/Galaxsea-Starlight-Mono-v3_1.ttf" // fontSize 12f
+            Font font = Font.createFont(Font.TRUETYPE_FONT, fontFile.file()).deriveFont((args.length >= 2 && args[1] != null) ?
+                    Float.parseFloat(args[1]) : 64f * fontSize);
             BufferedImage tImage = new BufferedImage(512, 512, BufferedImage.TYPE_4BYTE_ABGR);
             Graphics2D tGraphics = tImage.createGraphics();
             tGraphics.setFont(font);
@@ -112,9 +118,17 @@ public class GlamerTool extends ApplicationAdapter {
                     }
                 }
             }
-            int bw = (((2 << downscale) + (int)bounds.getWidth()) >> downscale) << downscale,
-                    bh = (((2 << downscale) + (int)(bounds.getHeight() + 1)) >> downscale) << downscale,
-                    width = bigSize / (bw+(2<<downscale)), height = bigSize / (bh+(2<<downscale)), baseline = (int)(bh + xBounds.getMinY()); // (int)(bh + xBounds.getMinY() + ((1<<downscale)-0.001))
+            int bw = (((2<<downscale) + (int)bounds.getWidth()) >> downscale) << downscale,
+                    bh = (((4<<downscale) + (int)(bounds.getHeight() + 1)) >> downscale) << downscale,
+                    width = bigSize / (bw+(2<<downscale)), height = bigSize / (bh+(2<<downscale)),
+                    offTop = (int) (bounds.getMaxY() - xBounds.getMaxY()),
+                    baseline = (int)(bounds.getHeight() - xBounds.getMinY() + bounds.getMinY() + (1 << downscale) + offTop); // + offTop //some fonts need this
+                    // (int)(bh + xBounds.getMinY() + ((1<<downscale)-0.001))
+
+            System.out.println("bh: " + bh);
+            System.out.println("offTop: " + offTop);
+            System.out.println("baseline: " + baseline);
+
             StringBuilder sb = new StringBuilder(0x10000);
             sb.append("info face=\"").append(fontFile.nameWithoutExtension()).append("\" size=-24 bold=0 italic=0 charset=\"\" unicode=1 stretchH=100 smooth=0 aa=1 padding=1,1,1,1 spacing=0,0 outline=0\n");
             sb.append("common lineHeight=").append((bh>>downscale)).append(" base=").append(baseline>>downscale).append(" scaleW=1024 scaleH=1024 pages=1 packed=0 alphaChnl=0 redChnl=4 greenChnl=4 blueChnl=4\n");
@@ -135,12 +149,20 @@ public class GlamerTool extends ApplicationAdapter {
             for (int y = 0; y < height && i < max; y++) {
                 for (int x = 0; x < width && i < max; x++) {
                     c=chars.get(i++);
-                    gb.clearRect(0,0,bw,bh);
-                    gb.drawString(String.valueOf(c), 1 << downscale, baseline + (1 << downscale));
-                    g.drawImage(board, x*(bw+(2<<downscale))+1,y*(bh+(2<<downscale))+1, null);
+                    gb.clearRect(0,0, bw, bh);
+                    gb.drawString(String.valueOf(c), 1 << downscale, baseline); // + (1 << downscale)
+                    g.drawImage(board,
+                            x*(bw+(2<<downscale)), //bw+(2<<downscale)
+                            y*(bh+(2<<downscale)), //bh+(2<<downscale)
+                            null);
                     //gb.drawString(String.valueOf(c), x * bw + 8, (y+1) * bh + 8);
-                    sb.append("char id=").append((int)c).append(" x=").append(x * (bw+(2<<downscale)) >> downscale).append(" y=").append(y * (bh+2) >> downscale).append(" width=").append((bw+(2<<downscale)>>downscale)-1).append(" height=").append(bh+(2<<downscale)>>downscale)
-                            .append(" xoffset=-1 yOffset=-1 xadvance=").append(((bw+2)>>downscale)).append(" page=0 chnl=15\n");
+                    sb.append("char id=").append((int)c)
+                            .append(" x=").append((x * (bw+(2<<downscale)) >> downscale)) //bw+(2<<downscale)
+                            .append(" y=").append(y * (bh+(2<<downscale)) >> downscale) //bh+(2<<downscale)
+                            .append(" width=").append((bw>>downscale)+1) //bw+(2<<downscale)
+                            .append(" height=").append((bh>>downscale))    //bh+(2<<downscale)
+                            .append(" xoffset=-1 yOffset=-1 xadvance=").append(((bw)>>downscale))
+                            .append(" page=0 chnl=15\n");
                 }
             }
             if(i < chars.size)
@@ -149,17 +171,16 @@ public class GlamerTool extends ApplicationAdapter {
             //ImageIO.write(image, "PNG", new File(fontFile.nameWithoutExtension() + ".png"));
             DistanceFieldGenerator dfg = new DistanceFieldGenerator();
             dfg.setDownscale(1 << downscale);
-            dfg.setSpread(4 << downscale);
+            dfg.setSpread((float)Math.pow(2, downscale) * 3.5f * MathUtils.log(5f, fontSize));
             ImageIO.write(dfg.generateDistanceField(image), "PNG", new File(fontFile.nameWithoutExtension() + "-distance.png"));
             Gdx.files.local(fontFile.nameWithoutExtension() + "-distance.fnt").writeString(sb.toString(), false);
             sb.setLength(0);
-            char cc;
-            for (int j = 0; j < chars.size; j++) {
-                cc = chars.get(j);
-                sb.append("index: ").append(String.format("%04X", (int)cc)).append(" glyph: ").append(cc).append(" \n");
-            }
-            //String.copyValueOf(chars.toArray())
-            Gdx.files.local(fontFile.nameWithoutExtension() + "-contents.txt").writeString(sb.toString(), false);
+//            char cc;
+//            for (int j = 0; j < chars.size; j++) {
+//                cc = chars.get(j);
+//                sb.append("index: ").append(String.format("%04X", (int)cc)).append(" glyph: ").append(cc).append(" \n");
+//            }
+            Gdx.files.local(fontFile.nameWithoutExtension() + "-contents.txt").writeString(String.valueOf(chars.toArray()), false);
             System.out.println("Done!");
         } catch (FontFormatException e) {
             e.printStackTrace();
