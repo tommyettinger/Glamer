@@ -34,11 +34,15 @@ public class GlamerTool extends ApplicationAdapter {
         super.create();
         try {
             int downscale = 3, mainSize = 2048, bigSize = mainSize << downscale;
-            float fontSize = 12f;
-            FileHandle fontFile = (args.length >= 1 && args[0] != null) ? Gdx.files.local(args[0]) : Gdx.files.local("assets/Galaxsea-Starlight-Mono-v3_1.ttf");
+            float fontSize = 5.4f;
+            FileHandle fontFile = (args.length >= 1 && args[0] != null) ? Gdx.files.local(args[0]) : Gdx.files.local(
+                    "assets/Iosevka-Slab.ttf"
+            // "assets/Iosevka.ttf" 5.5f
+            // "assets/Galaxsea-Starlight-Mono-v3_1.ttf" 12f
             // "assets/SourceCodePro-Medium.otf" // fontSize 6.5f
             // "assets/DejaVuSansMono.ttf" // fontSize 4.75f
             // "assets/Galaxsea-Starlight-Mono-v3_1.ttf" // fontSize 12f
+            );
             Font font = Font.createFont(Font.TRUETYPE_FONT, fontFile.file()).deriveFont((args.length >= 2 && args[1] != null) ?
                     Float.parseFloat(args[1]) : 64f * fontSize);
             BufferedImage tImage = new BufferedImage(512, 512, BufferedImage.TYPE_4BYTE_ABGR);
