@@ -1,0 +1,14 @@
+The font files in this folder all contain the same glyphs (from space at
+Unicode codepoint 32, up to and including tilde at Unicode codepoint 126), at
+the same approximate sizes, and in the same positions on a grid. Each cell of
+the grid is 62 pixels wide by 126 pixels tall, making each column also 62
+pixels wide and each row 126 pixels tall. The grid starts at x=8,y=8 from
+the upper left, and 8 should be added to each x or y component after
+calculating the row and column starts.
+You could use the different fonts as layers of a 3D texture to swap between
+bold/italic/regular versions of one font or swap between different fonts to
+help distinguish parts of a screen full of text. Though the glyphs should be
+completely contained in their cells, the baselines might not match between
+fonts, particularly the italic or oblique fonts when compared to regular or
+bold fonts. Italic fonts tend to be smaller here because they hit the limit of
+the width for a cell at a smaller size, so their height is smaller as well.

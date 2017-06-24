@@ -14,6 +14,8 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.LookupOp;
+import java.awt.image.LookupTable;
 import java.io.File;
 import java.io.IOException;
 
@@ -29,19 +31,169 @@ public class GlamerTool extends ApplicationAdapter {
         args = (params == null) ? new String[0] : params;
     }
 
+    private String[] filenames = {
+            "assets/DejaVuSansMono-Bold.ttf",
+            "assets/DejaVuSansMono-BoldOblique.ttf",
+            "assets/DejaVuSansMono-Oblique.ttf",
+            "assets/DejaVuSansMono.ttf",
+            "assets/Iosevka-Bold.ttf",
+            "assets/Iosevka-BoldOblique.ttf",
+            "assets/Iosevka-Oblique.ttf",
+            "assets/Iosevka-Slab-Bold.ttf",
+            "assets/Iosevka-Slab-BoldOblique.ttf",
+            "assets/Iosevka-Slab-Oblique.ttf",
+            "assets/Iosevka-Slab.ttf",
+            "assets/Iosevka.ttf",
+            "assets/SourceCodePro-Bold.otf",
+            "assets/SourceCodePro-BoldIt.otf",
+            "assets/SourceCodePro-Medium.otf",
+            "assets/SourceCodePro-MediumIt.otf"
+    };
     @Override
     public void create() {
+        super.create();
+        try {
+            int downscale = 4, mainSize = 1024, bigSize = mainSize << downscale,
+                    blockWidth = (64 - 14 << downscale), blockHeight = (128 - 14 << downscale);
+            for (String filename : filenames) {
+                FileHandle fontFile =  Gdx.files.local(filename);
+                Rectangle2D bounds, xBounds;
+                int bw = 0, bh = 0;
+                Font font = Font.createFont(Font.TRUETYPE_FONT, fontFile.file()).deriveFont(3000f);
+                // "assets/Iosevka.ttf" 5.5f
+                // "assets/Galaxsea-Starlight-Mono-v3_1.ttf" 12f
+                // "assets/SourceCodePro-Medium.otf" // fontSize 6.5f
+                // "assets/DejaVuSansMono.ttf" // fontSize 4.75f
+                // "assets/Galaxsea-Starlight-Mono-v3_1.ttf" // fontSize 12f
+                CharArray chars = new CharArray(128);
+                do {
+                    font = font.deriveFont(0.95f * font.getSize());
+                    BufferedImage tImage = new BufferedImage(2048, 2048, BufferedImage.TYPE_4BYTE_ABGR);
+                    Graphics2D tGraphics = tImage.createGraphics();
+                    tGraphics.setFont(font);
+                    FontRenderContext frc = tGraphics.getFontRenderContext();
+                    char[] tc = new char[]{'X'}, all = new char[0x80];
+                    for (char i = 0; i < 0x80; i++) {
+                        all[i] = i;
+                    }
+                    all[0x7f] = 0xffff;
+                    int missing = font.getMissingGlyphCode();
+                    GlyphVector gv = font.createGlyphVector(frc, tc), gv2 = font.createGlyphVector(frc, tc);
+                    bounds = gv2.getVisualBounds();
+                    xBounds = gv.getVisualBounds();
+                    chars.clear();
+                    for (char g = 32; g < 0x7f; g++) {
+                        tc[0] = g;
+                        gv2 = font.createGlyphVector(frc, tc);
+                        if (gv2.getGlyphCode(0) != missing) {
+                            chars.add(g);
+                            bounds.add(gv2.getVisualBounds());
+                        }
+                    }
+
+                    bw = (((2 << downscale) + (int) bounds.getWidth()) >> downscale) << downscale;
+                    bh = (((4 << downscale) + (int) (1 + bounds.getMaxY() - bounds.getMinY())) >> downscale) << downscale;
+                } while (bw > blockWidth - (12 << downscale) || bh > blockHeight - (12 << downscale));
+
+                int
+                        width = (bigSize - (20 << downscale)) / (blockWidth + (12 << downscale)),
+                        height = (bigSize - (20 << downscale)) / (blockHeight + (12 << downscale)),
+                        offTop = (int) (bounds.getMaxY() - xBounds.getMaxY()),
+                        baseline = (int) ((bounds.getMaxY() - bounds.getMinY()) - xBounds.getMinY() + bounds.getMinY() + (1 << downscale)); // + offTop //some fonts need this
+                // (int)(bh + xBounds.getMinY() + ((1<<downscale)-0.001))
+
+                System.out.println("bh: " + bh);
+                System.out.println("bw: " + bw);
+                System.out.println("offTop: " + offTop);
+                System.out.println("baseline: " + baseline);
+
+                StringBuilder sb = new StringBuilder(0x10000);
+                sb.append("info face=\"").append(fontFile.nameWithoutExtension()).append("\" size=-24 bold=0 italic=0 charset=\"\" unicode=1 stretchH=100 smooth=0 aa=1 padding=1,1,1,1 spacing=0,0 outline=0\n");
+                sb.append("common lineHeight=").append(((10 << downscale) + blockHeight >> downscale)).append(" base=").append(baseline >> downscale).append(" scaleW=1024 scaleH=1024 pages=1 packed=0 alphaChnl=0 redChnl=4 greenChnl=4 blueChnl=4\n");
+                sb.append("page id=0 file=\"").append(fontFile.nameWithoutExtension()).append("-distance.png\"\n");
+                sb.append("chars count=").append(chars.size).append('\n');
+                BufferedImage image = new BufferedImage(bigSize, bigSize, BufferedImage.TYPE_4BYTE_ABGR),
+                        board = new BufferedImage((11 << downscale) + blockWidth, (11 << downscale) + blockHeight, BufferedImage.TYPE_4BYTE_ABGR);
+                Graphics2D g = image.createGraphics(), gb = board.createGraphics();
+                g.clearRect(0, 0, bigSize, bigSize);
+                gb.clearRect(0, 0, (11 << downscale) + blockWidth, (11 << downscale) + blockHeight);
+                gb.setColor(Color.white);
+                gb.setFont(font);
+                gb.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+                gb.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
+                gb.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+                int i = 0, max = chars.size;
+                char c;
+                for (int y = 0; y < height && i < max; y++) {
+                    for (int x = 0; x < width && i < max; x++) {
+                        c = chars.get(i++);
+                        gb.clearRect(0, 0, (11 << downscale) + blockWidth, (11 << downscale) + blockHeight);
+                        gb.drawString(String.valueOf(c), 1 << downscale, baseline); // + (1 << downscale)
+                        g.drawImage(board,
+                                (20 << downscale) + x * (blockWidth + (12 << downscale)), //bw+(2<<downscale)
+                                (20 << downscale) + y * (blockHeight + (12 << downscale)), //bh+(2<<downscale)
+                                null);
+                        //gb.drawString(String.valueOf(c), x * bw + 8, (y+1) * bh + 8);
+                        sb.append("char id=").append((int) c)
+                                .append(" x=").append((20 << downscale) + x * (blockWidth + (12 << downscale)) >> downscale) //bw+(2<<downscale)
+                                .append(" y=").append((20 << downscale) + y * (blockHeight + (12 << downscale)) >> downscale) //bh+(2<<downscale)
+                                .append(" width=").append(((10 << downscale) + blockWidth >> downscale) + 1) //bw+(2<<downscale)
+                                .append(" height=").append(((10 << downscale) + blockHeight >> downscale))    //bh+(2<<downscale)
+                                .append(" xoffset=-1 yOffset=-1 xadvance=").append((((10 << downscale) + blockWidth) >> downscale))
+                                .append(" page=0 chnl=15\n");
+                    }
+                }
+                if (i < chars.size)
+                    System.out.println("Too many chars!");
+                System.out.println("Showed " + i + " chars out of " + chars.size);
+                //ImageIO.write(image, "PNG", new File(fontFile.nameWithoutExtension() + ".png"));
+                DistanceFieldGenerator dfg = new DistanceFieldGenerator();
+                dfg.setDownscale(1 << downscale);
+                dfg.setSpread((1 << downscale) * 10f);
+                BufferedImage dfgi = dfg.generateDistanceField(image);
+                ImageIO.write(dfgi, "PNG", new File(fontFile.nameWithoutExtension() + "-distance.png"));
+                LookupTable lookup = new LookupTable(0, 4)
+                {
+                    @Override
+                    public int[] lookupPixel(int[] src, int[] dest)
+                    {
+                        dest[0] = (255-src[0]);
+                        dest[1] = (255-src[1]);
+                        dest[2] = (255-src[2]);
+                        return dest;
+                    }
+                };
+                LookupOp op = new LookupOp(lookup, new RenderingHints(null));
+                ImageIO.write(op.filter(dfgi, null), "PNG", new File(fontFile.nameWithoutExtension() + "-distance-preview.png"));
+                Gdx.files.local(fontFile.nameWithoutExtension() + "-distance.fnt").writeString(sb.toString(), false);
+                sb.setLength(0);
+//            char cc;
+//            for (int j = 0; j < chars.size; j++) {
+//                cc = chars.get(j);
+//                sb.append("index: ").append(String.format("%04X", (int)cc)).append(" glyph: ").append(cc).append(" \n");
+//            }
+                Gdx.files.local(fontFile.nameWithoutExtension() + "-contents.txt").writeString(String.valueOf(chars.toArray()), false);
+            }
+            System.out.println("Done!");
+            } catch(FontFormatException e){
+                e.printStackTrace();
+            } catch(IOException e){
+                e.printStackTrace();
+            }
+
+    }
+    public void createNormal() {
         super.create();
         try {
             int downscale = 3, mainSize = 2048, bigSize = mainSize << downscale;
             float fontSize = 5.4f;
             FileHandle fontFile = (args.length >= 1 && args[0] != null) ? Gdx.files.local(args[0]) : Gdx.files.local(
                     "assets/Iosevka-Slab.ttf"
-            // "assets/Iosevka.ttf" 5.5f
-            // "assets/Galaxsea-Starlight-Mono-v3_1.ttf" 12f
-            // "assets/SourceCodePro-Medium.otf" // fontSize 6.5f
-            // "assets/DejaVuSansMono.ttf" // fontSize 4.75f
-            // "assets/Galaxsea-Starlight-Mono-v3_1.ttf" // fontSize 12f
+                    // "assets/Iosevka.ttf" 5.5f
+                    // "assets/Galaxsea-Starlight-Mono-v3_1.ttf" 12f
+                    // "assets/SourceCodePro-Medium.otf" // fontSize 6.5f
+                    // "assets/DejaVuSansMono.ttf" // fontSize 4.75f
+                    // "assets/Galaxsea-Starlight-Mono-v3_1.ttf" // fontSize 12f
             );
             Font font = Font.createFont(Font.TRUETYPE_FONT, fontFile.file()).deriveFont((args.length >= 2 && args[1] != null) ?
                     Float.parseFloat(args[1]) : 64f * fontSize);
@@ -127,7 +279,7 @@ public class GlamerTool extends ApplicationAdapter {
                     width = bigSize / (bw+(2<<downscale)), height = bigSize / (bh+(2<<downscale)),
                     offTop = (int) (bounds.getMaxY() - xBounds.getMaxY()),
                     baseline = (int)(bounds.getHeight() - xBounds.getMinY() + bounds.getMinY() + (1 << downscale) + offTop); // + offTop //some fonts need this
-                    // (int)(bh + xBounds.getMinY() + ((1<<downscale)-0.001))
+            // (int)(bh + xBounds.getMinY() + ((1<<downscale)-0.001))
 
             System.out.println("bh: " + bh);
             System.out.println("offTop: " + offTop);
@@ -193,4 +345,5 @@ public class GlamerTool extends ApplicationAdapter {
         }
 
     }
+
 }
