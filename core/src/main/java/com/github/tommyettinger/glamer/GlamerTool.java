@@ -18,6 +18,8 @@ import java.awt.image.LookupOp;
 import java.awt.image.LookupTable;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class GlamerTool extends ApplicationAdapter {
@@ -45,12 +47,114 @@ public class GlamerTool extends ApplicationAdapter {
             "assets/Iosevka-Slab.ttf",
             "assets/Iosevka.ttf",
             "assets/SourceCodePro-Bold.otf",
-            "assets/SourceCodePro-BoldIt.otf",
             "assets/SourceCodePro-Medium.otf",
-            "assets/SourceCodePro-MediumIt.otf"
+    }, baseNames = {
+            "DejaVuSansMono-Bold",
+            "DejaVuSansMono-BoldOblique",
+            "DejaVuSansMono-Oblique",
+            "DejaVuSansMono",
+            "Iosevka-Bold",
+            "Iosevka-BoldOblique",
+            "Iosevka-Oblique",
+            "Iosevka-Slab-Bold",
+            "Iosevka-Slab-BoldOblique",
+            "Iosevka-Slab-Oblique",
+            "Iosevka-Slab",
+            "Iosevka",
+            "SourceCodePro-Bold",
+            "SourceCodePro-Medium",
+
     };
+    private String allChars =
+            " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmno"+
+            "pqrstuvwxyz{|}~¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàá"+
+            "âãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĦħĨĩĪīĬĭĮįİı"+
+            "ĲĳĴĵĶķĹĺĻļĽľĿŀŁłŃńŅņŇňŊŋŌōŎŏŐőŒœŔŕŖŗŘřŚśŜŝŞşŠšŢţŤťŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽžſƒǺǻǼǽǾ"+
+            "ǿȘșȚțȷˆˇˉˋ˘˙˚˛˜˝;΄΅Ά·ΈΉΊΌΎΏΐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΪΫάέήίΰαβγδεζηθικλμνξοπρςστυ"+
+            "φχψωϊϋόύώЀЁЂЃЄЅІЇЈЉЊЋЌЍЎЏАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхц"+
+            "чшщъыьэюяѐёђѓєѕіїјљњћќѝўџѴѵҐґẀẁẂẃẄẅỲỳ–—‘’‚‛“”„†‡•…‰‹›ⁿ₤€№™Ω℮←↑→↓∆−√≈" +
+            "─│┌┐└┘├┤┬┴┼═║╒╓╔╕╖╗╘╙╚╛╜╝╞╟╠╡╢╣╤╥╦╧╨╩╪╫╬■□▲▼○●◦♀♂♠♣♥♦♪";
+
+
+    // "msdfgen.exe -font " + filename + " " + codepoint + " -scale 2.5 -translate 2 4.5 -size 32 64 -o " + codepoint + ".png"
+    // msdfgen.exe -font assets\Iosevka-Slab-Bold.ttf 64 -scale 2.5 -translate 2 4.5 -size 32 64 -o 64.png
     @Override
     public void create() {
+        super.create();
+        try {
+            int mainSize = 2048,
+                    blockWidth = 48, blockHeight = 96;
+            // change command[2] to filename
+            // change command[3] to the decimal codepoint printed as a string, such as "33"
+            // change command[5] to "3.25" after processing DJV
+            // change command[8] to "7.5" after processing DJV
+            List<String> command = Arrays.asList("msdfgen.exe", "-font", "assets/DejaVuSansMono-Bold.ttf", "33", "-scale", "2", "-translate", "3", "12", "-size", "48", "96", "-o", "temp.png");
+            String filename, baseName;
+            for (int nm = 0; nm < filenames.length; nm++) {
+                filename = filenames[nm];
+                baseName = baseNames[nm];
+                if(nm == 4)
+                {
+                    command.set(5, "3.25");
+                    command.set(8, "7.5");
+                }
+                command.set(2, filename);
+                int width = 42, height = 21, baseline = 24;
+
+                StringBuilder sb = new StringBuilder(0x10000);
+                sb.append("info face=\"").append(baseName).append("\" size=-48 bold=0 italic=0 charset=\"\" unicode=1 stretchH=100 smooth=0 aa=1 padding=0,0,0,0 spacing=0,0 outline=0\n");
+                sb.append("common lineHeight=").append(64).append(" base=").append(baseline).append(" scaleW=1024 scaleH=1024 pages=1 packed=0 alphaChnl=0 redChnl=4 greenChnl=4 blueChnl=4\n");
+                sb.append("page id=0 file=\"").append(baseName).append("-distance.png\"\n");
+                sb.append("chars count=").append(allChars.length()).append('\n');
+                BufferedImage image = new BufferedImage(mainSize, mainSize, BufferedImage.TYPE_4BYTE_ABGR),
+                        board;
+                Graphics2D g = image.createGraphics();
+                g.clearRect(0, 0, mainSize, mainSize);
+                int i = 0, max = allChars.length();
+                int c;
+                ProcessBuilder proc = new ProcessBuilder(command);
+                for (int y = 0; y < height && i < max; y++) {
+                    for (int x = 0; x < width && i < max; x++) {
+                        c = allChars.charAt(i++);
+                        command.set(3, String.valueOf(c));
+                        proc.start().waitFor();
+                        board = ImageIO.read(new File("temp.png"));
+                        g.drawImage(board,
+                                x * blockWidth, //bw+(2<<downscale)
+                                y * blockHeight, //bh+(2<<downscale)
+                                null);
+                        //gb.drawString(String.valueOf(c), x * bw + 8, (y+1) * bh + 8);
+                        sb.append("char id=").append(c)
+                                .append(" x=").append(x * blockWidth) //bw+(2<<downscale)
+                                .append(" y=").append(y * blockHeight)
+                                .append(" width=").append(blockWidth) //bw+(2<<downscale)
+                                .append(" height=").append(blockHeight)
+                                .append(" xoffset=-1 yOffset=-1 xadvance=").append(24)
+                                .append(" page=0 chnl=15\n");
+                    }
+                }
+                if (i < allChars.length())
+                    System.out.println("Too many chars!");
+                ImageIO.write(image, "PNG", new File(baseName + "-msdf.png"));
+                Gdx.files.local(baseName + "-distance.fnt").writeString(sb.toString(), false);
+                sb.setLength(0);
+//            char cc;
+//            for (int j = 0; j < chars.size; j++) {
+//                cc = chars.get(j);
+//                sb.append("index: ").append(String.format("%04X", (int)cc)).append(" glyph: ").append(cc).append(" \n");
+//            }
+                Gdx.files.local(baseName + "-contents.txt").writeString(allChars, false);
+            }
+            System.out.println("Done!");
+        } catch(IOException e){
+            e.printStackTrace();
+        } catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+
+    }
+    public void createSeveral() {
         super.create();
         try {
             int downscale = 4, mainSize = 1024, bigSize = mainSize << downscale,
@@ -175,11 +279,11 @@ public class GlamerTool extends ApplicationAdapter {
                 Gdx.files.local(fontFile.nameWithoutExtension() + "-contents.txt").writeString(String.valueOf(chars.toArray()), false);
             }
             System.out.println("Done!");
-            } catch(FontFormatException e){
-                e.printStackTrace();
-            } catch(IOException e){
-                e.printStackTrace();
-            }
+        } catch(FontFormatException e){
+            e.printStackTrace();
+        } catch(IOException e){
+            e.printStackTrace();
+        }
 
     }
     public void createNormal() {
