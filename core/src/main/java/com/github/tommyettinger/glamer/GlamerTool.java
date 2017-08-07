@@ -41,11 +41,11 @@ public class GlamerTool extends ApplicationAdapter {
             "assets/Iosevka-Bold.ttf",
             "assets/Iosevka-BoldOblique.ttf",
             "assets/Iosevka-Oblique.ttf",
+            "assets/Iosevka.ttf",
             "assets/Iosevka-Slab-Bold.ttf",
             "assets/Iosevka-Slab-BoldOblique.ttf",
             "assets/Iosevka-Slab-Oblique.ttf",
             "assets/Iosevka-Slab.ttf",
-            "assets/Iosevka.ttf",
             "assets/SourceCodePro-Bold.otf",
             "assets/SourceCodePro-Medium.otf",
     }, baseNames = {
@@ -56,55 +56,77 @@ public class GlamerTool extends ApplicationAdapter {
             "Iosevka-Bold",
             "Iosevka-BoldOblique",
             "Iosevka-Oblique",
+            "Iosevka",
             "Iosevka-Slab-Bold",
             "Iosevka-Slab-BoldOblique",
             "Iosevka-Slab-Oblique",
             "Iosevka-Slab",
-            "Iosevka",
             "SourceCodePro-Bold",
             "SourceCodePro-Medium",
 
     };
+//    private String allChars =
+//            " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmno"+
+//            "pqrstuvwxyz{|}~¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàá"+
+//            "âãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĦħĨĩĪīĬĭĮįİı"+
+//            "ĲĳĴĵĶķĹĺĻļĽľĿŀŁłŃńŅņŇňŊŋŌōŎŏŐőŒœŔŕŖŗŘřŚśŜŝŞşŠšŢţŤťŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽžſƒǺǻǼǽǾ"+
+//            "ǿȘșȚțȷˆˇˉˋ˘˙˚˛˜˝;΄΅Ά·ΈΉΊΌΎΏΐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΪΫάέήίΰαβγδεζηθικλμνξοπρςστυ"+
+//            "φχψωϊϋόύώЀЁЂЃЄЅІЇЈЉЊЋЌЍЎЏАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхц"+
+//            "чшщъыьэюяѐёђѓєѕіїјљњћќѝўџѴѵҐґẀẁẂẃẄẅỲỳ–—‘’‚‛“”„†‡•…‰‹›ⁿ₤€№™Ω℮←↑→↓∆−√≈" +
+//            "─│┌┐└┘├┤┬┴┼═║╒╓╔╕╖╗╘╙╚╛╜╝╞╟╠╡╢╣╤╥╦╧╨╩╪╫╬■□▲▼○●◦♀♂♠♣♥♦♪";
+
     private String allChars =
             " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmno"+
             "pqrstuvwxyz{|}~¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàá"+
             "âãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĦħĨĩĪīĬĭĮįİı"+
-            "ĲĳĴĵĶķĹĺĻļĽľĿŀŁłŃńŅņŇňŊŋŌōŎŏŐőŒœŔŕŖŗŘřŚśŜŝŞşŠšŢţŤťŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽžſƒǺǻǼǽǾ"+
-            "ǿȘșȚțȷˆˇˉˋ˘˙˚˛˜˝;΄΅Ά·ΈΉΊΌΎΏΐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΪΫάέήίΰαβγδεζηθικλμνξοπρςστυ"+
+            "ĴĵĶķĹĺĻļĽľĿŀŁłŃńŅņŇňŊŋŌōŎŏŐőŒœŔŕŖŗŘřŚśŜŝŞşŠšŢţŤťŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽžſƒǺǻǼǽǾǿ"+
+            "ȘșȚțȷˆˇˉˋ˘˙˚˛˜˝΄΅Ά·ΈΉΊΌΎΏΐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΪΫάέήίΰαβγδεζηθικλμνξοπρςστυ"+
             "φχψωϊϋόύώЀЁЂЃЄЅІЇЈЉЊЋЌЍЎЏАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхц"+
             "чшщъыьэюяѐёђѓєѕіїјљњћќѝўџѴѵҐґẀẁẂẃẄẅỲỳ–—‘’‚‛“”„†‡•…‰‹›ⁿ₤€№™Ω℮←↑→↓∆−√≈" +
             "─│┌┐└┘├┤┬┴┼═║╒╓╔╕╖╗╘╙╚╛╜╝╞╟╠╡╢╣╤╥╦╧╨╩╪╫╬■□▲▼○●◦♀♂♠♣♥♦♪";
 
+    @Override
+    public void create()
+    {
+        createNormal();
+    }
 
     // "msdfgen.exe -font " + filename + " " + codepoint + " -scale 2.5 -translate 2 4.5 -size 32 64 -o " + codepoint + ".png"
     // msdfgen.exe -font assets\Iosevka-Slab-Bold.ttf 64 -scale 2.5 -translate 2 4.5 -size 32 64 -o 64.png
-    @Override
-    public void create() {
+    public void create_msdf() {
         super.create();
         try {
             int mainSize = 2048,
-                    blockWidth = 48, blockHeight = 96;
+                    blockWidth = 44, blockHeight = 92;
             // change command[2] to filename
             // change command[3] to the decimal codepoint printed as a string, such as "33"
             // change command[5] to "3.25" after processing DJV
             // change command[8] to "7.5" after processing DJV
-            List<String> command = Arrays.asList("msdfgen.exe", "-font", "assets/DejaVuSansMono-Bold.ttf", "33", "-scale", "2", "-translate", "3", "12", "-size", "48", "96", "-o", "temp.png");
+            List<String> command = Arrays.asList("msdfgen.exe", "-font", "assets/DejaVuSansMono-Bold.ttf", "33", "-scale", "1.6", "-translate", "3.25", "15", "-size", "44", "92", "-o", "temp.png");
+            //List<String> command = Arrays.asList("msdfgen.exe", "-font", "assets/DejaVuSansMono-Bold.ttf", "33", "-scale", "3.2", "-translate", "3.5", "7.5", "-size", "44", "92", "-o", "temp.png");
             String filename, baseName;
             for (int nm = 0; nm < filenames.length; nm++) {
                 filename = filenames[nm];
                 baseName = baseNames[nm];
                 if(nm == 4)
                 {
-                    command.set(5, "3.25");
+                    command.set(5, "3.2");
+                    command.set(7, "3.5");
                     command.set(8, "7.5");
+                }
+                else if(nm == 8)
+                {
+                    command.set(5, "3.75");
+                    command.set(7, "3.25");
+                    command.set(8, "5");
                 }
                 command.set(2, filename);
                 int width = 42, height = 21, baseline = 24;
 
                 StringBuilder sb = new StringBuilder(0x10000);
-                sb.append("info face=\"").append(baseName).append("\" size=-48 bold=0 italic=0 charset=\"\" unicode=1 stretchH=100 smooth=0 aa=1 padding=0,0,0,0 spacing=0,0 outline=0\n");
-                sb.append("common lineHeight=").append(64).append(" base=").append(baseline).append(" scaleW=1024 scaleH=1024 pages=1 packed=0 alphaChnl=0 redChnl=4 greenChnl=4 blueChnl=4\n");
-                sb.append("page id=0 file=\"").append(baseName).append("-distance.png\"\n");
+                sb.append("info face=\"").append(baseName).append("\" size=-64 bold=0 italic=0 charset=\"\" unicode=1 stretchH=100 smooth=0 aa=1 padding=0,0,0,0 spacing=0,0 outline=0\n");
+                sb.append("common lineHeight=").append(80).append(" base=").append(baseline).append(" scaleW=1024 scaleH=1024 pages=1 packed=0 alphaChnl=0 redChnl=1 greenChnl=2 blueChnl=4\n");
+                sb.append("page id=0 file=\"").append(baseName).append("-msdf.png\"\n");
                 sb.append("chars count=").append(allChars.length()).append('\n');
                 BufferedImage image = new BufferedImage(mainSize, mainSize, BufferedImage.TYPE_4BYTE_ABGR),
                         board;
@@ -120,30 +142,30 @@ public class GlamerTool extends ApplicationAdapter {
                         proc.start().waitFor();
                         board = ImageIO.read(new File("temp.png"));
                         g.drawImage(board,
-                                x * blockWidth, //bw+(2<<downscale)
-                                y * blockHeight, //bh+(2<<downscale)
+                                2 + x * (4 + blockWidth), //bw+(2<<downscale)
+                                2 + y * (4 + blockHeight), //bh+(2<<downscale)
                                 null);
                         //gb.drawString(String.valueOf(c), x * bw + 8, (y+1) * bh + 8);
                         sb.append("char id=").append(c)
-                                .append(" x=").append(x * blockWidth) //bw+(2<<downscale)
-                                .append(" y=").append(y * blockHeight)
-                                .append(" width=").append(blockWidth) //bw+(2<<downscale)
+                                .append(" x=").append(2 + x * (4 + blockWidth)) //bw+(2<<downscale)
+                                .append(" y=").append(2 + y * (4 + blockHeight))
+                                .append(" width=").append(blockWidth - 4) //bw+(2<<downscale)
                                 .append(" height=").append(blockHeight)
-                                .append(" xoffset=-1 yOffset=-1 xadvance=").append(24)
+                                .append(" xoffset=12 yOffset=-1 xadvance=").append(24)
                                 .append(" page=0 chnl=15\n");
                     }
                 }
                 if (i < allChars.length())
                     System.out.println("Too many chars!");
                 ImageIO.write(image, "PNG", new File(baseName + "-msdf.png"));
-                Gdx.files.local(baseName + "-distance.fnt").writeString(sb.toString(), false);
+                //Gdx.files.local(baseName + "-msdf.fnt").writeString(sb.toString(), false);
                 sb.setLength(0);
 //            char cc;
 //            for (int j = 0; j < chars.size; j++) {
 //                cc = chars.get(j);
 //                sb.append("index: ").append(String.format("%04X", (int)cc)).append(" glyph: ").append(cc).append(" \n");
 //            }
-                Gdx.files.local(baseName + "-contents.txt").writeString(allChars, false);
+                //Gdx.files.local(baseName + "-contents.txt").writeString(allChars, false);
             }
             System.out.println("Done!");
         } catch(IOException e){
@@ -290,10 +312,18 @@ public class GlamerTool extends ApplicationAdapter {
         super.create();
         try {
             int downscale = 3, mainSize = 2048, bigSize = mainSize << downscale;
-            float fontSize = 5.4f;
+            float fontSize = 5.25f;
             FileHandle fontFile = (args.length >= 1 && args[0] != null) ? Gdx.files.local(args[0]) : Gdx.files.local(
-                    "assets/Iosevka-Slab.ttf"
+                    "assets/Iosevka-Wide-Slab-Light.ttf"
                     // "assets/Iosevka.ttf" 5.5f
+                    // "assets/Iosevka-Slab.ttf" 5.4f
+                    // "assets/Iosevka-Light.ttf" 5.5f
+                    // "assets/Iosevka-Slab-Light.ttf" 5.4f
+                    // "assets/Iosevka-Slab-Thin.ttf" 5.4f
+                    // "assets/Iosevka-Wide.ttf" 5.25f
+                    // "assets/Iosevka-Wide-Slab.ttf" 5.25f (too high?)
+                    // "assets/Iosevka-Wide-Light.ttf" 5.25f
+                    // "assets/Iosevka-Wide-Slab-Light.ttf" 5.25f
                     // "assets/Galaxsea-Starlight-Mono-v3_1.ttf" 12f
                     // "assets/SourceCodePro-Medium.otf" // fontSize 6.5f
                     // "assets/DejaVuSansMono.ttf" // fontSize 4.75f
@@ -349,7 +379,7 @@ public class GlamerTool extends ApplicationAdapter {
             if(bounds == null)
                 bounds = xBounds.getBounds2D();
             for (int i = 32; i <= 0xffff; i++) {
-                if(gv.getGlyphCode(i) != missing)
+                if(gv.getGlyphCode(i) != missing && Character.isDefined(i))
                 {
                     switch (Character.getDirectionality(i)) {
                         case Character.DIRECTIONALITY_WHITESPACE:

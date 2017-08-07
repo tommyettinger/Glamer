@@ -62,3 +62,6 @@ nb-configuration.xml
 
 ## OS Specific
 .DS_Store
+
+## Glamer Specific
+temp.png
