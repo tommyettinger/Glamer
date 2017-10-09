@@ -312,9 +312,10 @@ public class GlamerTool extends ApplicationAdapter {
         super.create();
         try {
             int downscale = 3, mainSize = 2048, bigSize = mainSize << downscale;
-            float fontSize = 5.25f;
+            float fontSize = 12f;
             FileHandle fontFile = (args.length >= 1 && args[0] != null) ? Gdx.files.local(args[0]) : Gdx.files.local(
-                    "assets/Iosevka-Wide-Slab-Light.ttf"
+                    "assets/BoxedIn.ttf"
+                    // "assets/Iosevka-Wide-Slab-Light.ttf" 5.25f
                     // "assets/Iosevka.ttf" 5.5f
                     // "assets/Iosevka-Slab.ttf" 5.4f
                     // "assets/Iosevka-Light.ttf" 5.5f
@@ -393,6 +394,8 @@ public class GlamerTool extends ApplicationAdapter {
                         case Character.DIRECTIONALITY_OTHER_NEUTRALS:
                         case Character.DIRECTIONALITY_UNDEFINED:
                         case Character.DIRECTIONALITY_SEGMENT_SEPARATOR:
+                            if(Character.isSurrogate((char)i))
+                                continue;
                             if(incomplete) {
                                 tc[0] = (char) i;
                                 gv2 = font.createGlyphVector(frc, tc);
@@ -408,11 +411,13 @@ public class GlamerTool extends ApplicationAdapter {
                     }
                 }
             }
-            int bw = (((2<<downscale) + (int)bounds.getWidth()) >> downscale) << downscale,
-                    bh = (((4<<downscale) + (int)(bounds.getHeight() + 1)) >> downscale) << downscale,
-                    width = bigSize / (bw+(2<<downscale)), height = bigSize / (bh+(2<<downscale)),
-                    offTop = (int) (bounds.getMaxY() - xBounds.getMaxY()),
-                    baseline = (int)(bounds.getHeight() - xBounds.getMinY() + bounds.getMinY() + (1 << downscale) + offTop); // + offTop //some fonts need this
+//            chars.clear();
+//            chars.addAll('x', 'X', '┼', '.');
+            int bw = (((int)bounds.getWidth()) >> downscale) << downscale,
+                    bh = (((int)(bounds.getHeight())) >> downscale) << downscale,
+                    width = bigSize / (bw+(4<<downscale)), height = bigSize / (bh+(4<<downscale)),
+                    offTop = (int) (bounds.getMinY() - xBounds.getMinY()),
+                    baseline = (int)(bh);// + xBounds.getMaxY() - bounds.getMaxY()); // + offTop //some fonts need this
             // (int)(bh + xBounds.getMinY() + ((1<<downscale)-0.001))
 
             System.out.println("bh: " + bh);
@@ -440,16 +445,16 @@ public class GlamerTool extends ApplicationAdapter {
                 for (int x = 0; x < width && i < max; x++) {
                     c=chars.get(i++);
                     gb.clearRect(0,0, bw, bh);
-                    gb.drawString(String.valueOf(c), 1 << downscale, baseline); // + (1 << downscale)
+                    gb.drawString(String.valueOf(c), 0, baseline); // + (1 << downscale)
                     g.drawImage(board,
-                            x*(bw+(2<<downscale)), //bw+(2<<downscale)
-                            y*(bh+(2<<downscale)), //bh+(2<<downscale)
+                            x*(bw+(4<<downscale)), //bw+(2<<downscale)
+                            y*(bh+(4<<downscale)), //bh+(2<<downscale)
                             null);
                     //gb.drawString(String.valueOf(c), x * bw + 8, (y+1) * bh + 8);
                     sb.append("char id=").append((int)c)
-                            .append(" x=").append((x * (bw+(2<<downscale)) >> downscale)) //bw+(2<<downscale)
-                            .append(" y=").append(y * (bh+(2<<downscale)) >> downscale) //bh+(2<<downscale)
-                            .append(" width=").append((bw>>downscale)+1) //bw+(2<<downscale)
+                            .append(" x=").append((x * (bw+(4<<downscale)) >> downscale)) //bw+(2<<downscale)
+                            .append(" y=").append(y * (bh+(4<<downscale)) >> downscale) //bh+(2<<downscale)
+                            .append(" width=").append((bw>>downscale)) //bw+(2<<downscale)
                             .append(" height=").append((bh>>downscale))    //bh+(2<<downscale)
                             .append(" xoffset=-1 yOffset=-1 xadvance=").append(((bw)>>downscale))
                             .append(" page=0 chnl=15\n");
@@ -461,7 +466,8 @@ public class GlamerTool extends ApplicationAdapter {
             //ImageIO.write(image, "PNG", new File(fontFile.nameWithoutExtension() + ".png"));
             DistanceFieldGenerator dfg = new DistanceFieldGenerator();
             dfg.setDownscale(1 << downscale);
-            dfg.setSpread((float)Math.pow(2, downscale) * 3.5f * MathUtils.log(5f, fontSize));
+            //dfg.setSpread((float)Math.pow(2, downscale) * 3.5f * MathUtils.log(5f, fontSize));
+            dfg.setSpread((float)Math.pow(2, downscale) * 3.5f * MathUtils.log(5f, 4f)); // MathUtils.log(5f, fontSize));
             ImageIO.write(dfg.generateDistanceField(image), "PNG", new File(fontFile.nameWithoutExtension() + "-distance.png"));
             Gdx.files.local(fontFile.nameWithoutExtension() + "-distance.fnt").writeString(sb.toString(), false);
             sb.setLength(0);
