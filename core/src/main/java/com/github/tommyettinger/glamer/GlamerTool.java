@@ -22,15 +22,17 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-/** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
+/**
+ * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms.
+ */
 public class GlamerTool extends ApplicationAdapter {
     String[] args;
-    public GlamerTool()
-    {
+
+    public GlamerTool() {
         this(new String[0]);
     }
-    public GlamerTool(String[] params)
-    {
+
+    public GlamerTool(String[] params) {
         args = (params == null) ? new String[0] : params;
     }
 
@@ -77,18 +79,17 @@ public class GlamerTool extends ApplicationAdapter {
 //            "─│┌┐└┘├┤┬┴┼═║╒╓╔╕╖╗╘╙╚╛╜╝╞╟╠╡╢╣╤╥╦╧╨╩╪╫╬■□▲▼○●◦♀♂♠♣♥♦♪";
 
     private String allChars =
-            " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmno"+
-            "pqrstuvwxyz{|}~¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàá"+
-            "âãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĦħĨĩĪīĬĭĮįİı"+
-            "ĴĵĶķĹĺĻļĽľĿŀŁłŃńŅņŇňŊŋŌōŎŏŐőŒœŔŕŖŗŘřŚśŜŝŞşŠšŢţŤťŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽžſƒǺǻǼǽǾǿ"+
-            "ȘșȚțȷˆˇˉˋ˘˙˚˛˜˝΄΅Ά·ΈΉΊΌΎΏΐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΪΫάέήίΰαβγδεζηθικλμνξοπρςστυ"+
-            "φχψωϊϋόύώЀЁЂЃЄЅІЇЈЉЊЋЌЍЎЏАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхц"+
-            "чшщъыьэюяѐёђѓєѕіїјљњћќѝўџѴѵҐґẀẁẂẃẄẅỲỳ–—‘’‚‛“”„†‡•…‰‹›ⁿ₤€№™Ω℮←↑→↓∆−√≈" +
-            "─│┌┐└┘├┤┬┴┼═║╒╓╔╕╖╗╘╙╚╛╜╝╞╟╠╡╢╣╤╥╦╧╨╩╪╫╬■□▲▼○●◦♀♂♠♣♥♦♪";
+            " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmno" +
+                    "pqrstuvwxyz{|}~¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàá" +
+                    "âãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĦħĨĩĪīĬĭĮįİı" +
+                    "ĴĵĶķĹĺĻļĽľĿŀŁłŃńŅņŇňŊŋŌōŎŏŐőŒœŔŕŖŗŘřŚśŜŝŞşŠšŢţŤťŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽžſƒǺǻǼǽǾǿ" +
+                    "ȘșȚțȷˆˇˉˋ˘˙˚˛˜˝΄΅Ά·ΈΉΊΌΎΏΐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΪΫάέήίΰαβγδεζηθικλμνξοπρςστυ" +
+                    "φχψωϊϋόύώЀЁЂЃЄЅІЇЈЉЊЋЌЍЎЏАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхц" +
+                    "чшщъыьэюяѐёђѓєѕіїјљњћќѝўџѴѵҐґẀẁẂẃẄẅỲỳ–—‘’‚‛“”„†‡•…‰‹›ⁿ₤€№™Ω℮←↑→↓∆−√≈" +
+                    "─│┌┐└┘├┤┬┴┼═║╒╓╔╕╖╗╘╙╚╛╜╝╞╟╠╡╢╣╤╥╦╧╨╩╪╫╬■□▲▼○●◦♀♂♠♣♥♦♪";
 
     @Override
-    public void create()
-    {
+    public void create() {
         createNormal();
     }
 
@@ -109,14 +110,11 @@ public class GlamerTool extends ApplicationAdapter {
             for (int nm = 0; nm < filenames.length; nm++) {
                 filename = filenames[nm];
                 baseName = baseNames[nm];
-                if(nm == 4)
-                {
+                if (nm == 4) {
                     command.set(5, "3.2");
                     command.set(7, "3.5");
                     command.set(8, "7.5");
-                }
-                else if(nm == 8)
-                {
+                } else if (nm == 8) {
                     command.set(5, "3.75");
                     command.set(7, "3.25");
                     command.set(8, "5");
@@ -169,21 +167,21 @@ public class GlamerTool extends ApplicationAdapter {
                 //Gdx.files.local(baseName + "-contents.txt").writeString(allChars, false);
             }
             System.out.println("Done!");
-        } catch(IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
-        } catch (InterruptedException e)
-        {
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
     }
+
     public void createSeveral() {
         super.create();
         try {
             int downscale = 4, mainSize = 1024, bigSize = mainSize << downscale,
                     blockWidth = (64 - 14 << downscale), blockHeight = (128 - 14 << downscale);
             for (String filename : filenames) {
-                FileHandle fontFile =  Gdx.files.local(filename);
+                FileHandle fontFile = Gdx.files.local(filename);
                 Rectangle2D bounds, xBounds;
                 int bw = 0, bh = 0;
                 Font font = Font.createFont(Font.TRUETYPE_FONT, fontFile.file()).deriveFont(3000f);
@@ -279,14 +277,12 @@ public class GlamerTool extends ApplicationAdapter {
                 dfg.setSpread((1 << downscale) * 10f);
                 BufferedImage dfgi = dfg.generateDistanceField(image);
                 ImageIO.write(dfgi, "PNG", new File(fontFile.nameWithoutExtension() + "-distance.png"));
-                LookupTable lookup = new LookupTable(0, 4)
-                {
+                LookupTable lookup = new LookupTable(0, 4) {
                     @Override
-                    public int[] lookupPixel(int[] src, int[] dest)
-                    {
-                        dest[0] = (255-src[0]);
-                        dest[1] = (255-src[1]);
-                        dest[2] = (255-src[2]);
+                    public int[] lookupPixel(int[] src, int[] dest) {
+                        dest[0] = (255 - src[0]);
+                        dest[1] = (255 - src[1]);
+                        dest[2] = (255 - src[2]);
                         return dest;
                     }
                 };
@@ -302,16 +298,50 @@ public class GlamerTool extends ApplicationAdapter {
                 Gdx.files.local(fontFile.nameWithoutExtension() + "-contents.txt").writeString(String.valueOf(chars.toArray()), false);
             }
             System.out.println("Done!");
-        } catch(FontFormatException e){
+        } catch (FontFormatException e) {
             e.printStackTrace();
-        } catch(IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
     }
+
     public void createNormal() {
         super.create();
         ObjectFloatMap<String> mapping = new ObjectFloatMap<>(16);
+        /*
+        mapping.put("assets/Iosevka_Full/Iosevka-Bold.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-BoldOblique.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-Oblique.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-Regular.ttf", 2.55f);
+        */
+        /*
+        mapping.put("assets/Iosevka_Full/Iosevka-ExtraLight.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-ExtraLightOblique.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-Heavy.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-HeavyOblique.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-Light.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-LightOblique.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-Medium.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-MediumOblique.ttf", 2.55f);
+        */
+
+        mapping.put("assets/Iosevka_Full/Iosevka-Slab-Bold.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-Slab-BoldOblique.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-Slab-Oblique.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-Slab-Regular.ttf", 2.55f);
+
+        /*
+        mapping.put("assets/Iosevka_Full/Iosevka-Slab-ExtraLight.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-Slab-ExtraLightOblique.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-Slab-Heavy.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-Slab-HeavyOblique.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-Slab-Light.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-Slab-LightOblique.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-Slab-Medium.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-Slab-MediumOblique.ttf", 2.55f);
+        */
+        /*
         mapping.put("assets/Inconsolata-LGC-Square.ttf", 7.1f);
         mapping.put("assets/Inconsolata-LGC-Custom.ttf", 9.6f);
         mapping.put("assets/Iosevka.ttf", 5.5f);
@@ -325,11 +355,12 @@ public class GlamerTool extends ApplicationAdapter {
         mapping.put("assets/Iosevka-Wide-Slab-Light.ttf", 5.25f);
         mapping.put("assets/SourceCodePro-Medium.otf", 6.65f);
         mapping.put("assets/DejaVuSansMono.ttf", 4.85f);
+        */
         //mapping.put("assets/Galaxsea-Starlight-Mono-v3_1.ttf", 12f);
         // "assets/BoxedIn.ttf" // 12f
 
         try {
-            int downscale = 3, mainSize = 2048, bigSize = mainSize << downscale;
+            int downscale = 3, mainSize = 1024, bigSize = mainSize << downscale;
             for (ObjectFloatMap.Entry<String> entry : mapping) {
                 float fontSize = entry.value;
 
@@ -428,11 +459,11 @@ public class GlamerTool extends ApplicationAdapter {
                 }
 //            chars.clear();
 //            chars.addAll('x', 'X', '┼', '.');
-                int bw = (((2<<downscale) + (int)bounds.getWidth()) >> downscale) << downscale,
-                        bh = (((2<<downscale) + (int)(bounds.getHeight())) >> downscale) << downscale,
-                        width = bigSize / (bw+(2<<downscale)), height = bigSize / (bh+(2<<downscale)),
+                int bw = (((2 << downscale) + (int) bounds.getWidth()) >> downscale) << downscale,
+                        bh = (((2 << downscale) + (int) (bounds.getHeight())) >> downscale) << downscale,
+                        width = bigSize / (bw + (2 << downscale)), height = bigSize / (bh + (2 << downscale)),
                         offTop = (int) (bounds.getMaxY() - xBounds.getMaxY()),
-                        baseline = (int)(bounds.getHeight() - xBounds.getMinY() + bounds.getMinY() + (1 << downscale) +
+                        baseline = (int) (bounds.getHeight() - xBounds.getMinY() + bounds.getMinY() + (1 << downscale) +
                                 ("assets/SourceCodePro-Medium.otf".equals(entry.key) ? 0 : offTop)); // + offTop //some fonts need this
 
 //                int bw = (((int) bounds.getWidth()) >> downscale) << downscale,
