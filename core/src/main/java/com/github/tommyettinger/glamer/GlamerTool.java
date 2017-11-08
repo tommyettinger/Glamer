@@ -5,8 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tools.distancefield.DistanceFieldGenerator;
-import com.badlogic.gdx.utils.CharArray;
-import com.badlogic.gdx.utils.ObjectFloatMap;
+import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.utils.StringBuilder;
 
 import javax.imageio.ImageIO;
@@ -90,7 +89,8 @@ public class GlamerTool extends ApplicationAdapter {
 
     @Override
     public void create() {
-        createNormal();
+        createFamily();
+        //createNormal();
     }
 
     // "msdfgen.exe -font " + filename + " " + codepoint + " -scale 2.5 -translate 2 4.5 -size 32 64 -o " + codepoint + ".png"
@@ -306,6 +306,313 @@ public class GlamerTool extends ApplicationAdapter {
 
     }
 
+    public void createFamily() {
+        super.create();
+        String[] fonts = {
+
+                "assets/Iosevka_Full/Iosevka-Regular.ttf",
+                "assets/Iosevka_Full/Iosevka-Bold.ttf",
+                "assets/Iosevka_Full/Iosevka-Oblique.ttf",
+                "assets/Iosevka_Full/Iosevka-BoldOblique.ttf",
+                "Iosevka-Family",
+
+
+                "assets/Iosevka_Full/Iosevka-Slab-Regular.ttf",
+                "assets/Iosevka_Full/Iosevka-Slab-Bold.ttf",
+                "assets/Iosevka_Full/Iosevka-Slab-Oblique.ttf",
+                "assets/Iosevka_Full/Iosevka-Slab-BoldOblique.ttf",
+                "Iosevka-Slab-Family",
+
+        };
+        float fontSize = 2.66f;
+
+        /*
+        mapping.put("assets/Iosevka_Full/Iosevka-Bold.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-BoldOblique.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-Oblique.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-Regular.ttf", 2.55f);
+        */
+        /*
+        mapping.put("assets/Iosevka_Full/Iosevka-ExtraLight.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-ExtraLightOblique.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-Heavy.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-HeavyOblique.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-Light.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-LightOblique.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-Medium.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-MediumOblique.ttf", 2.55f);
+        */
+        /*
+        mapping.put("assets/Iosevka_Full/Iosevka-Slab-Bold.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-Slab-BoldOblique.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-Slab-Oblique.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-Slab-Regular.ttf", 2.55f);
+        */
+        /*
+        mapping.put("assets/Iosevka_Full/Iosevka-Slab-ExtraLight.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-Slab-ExtraLightOblique.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-Slab-Heavy.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-Slab-HeavyOblique.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-Slab-Light.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-Slab-LightOblique.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-Slab-Medium.ttf", 2.55f);
+        mapping.put("assets/Iosevka_Full/Iosevka-Slab-MediumOblique.ttf", 2.55f);
+        */
+        /*
+        mapping.put("assets/Inconsolata-LGC-Square.ttf", 7.1f);
+        mapping.put("assets/Inconsolata-LGC-Custom.ttf", 9.6f);
+        mapping.put("assets/Iosevka.ttf", 5.5f);
+        mapping.put("assets/Iosevka-Slab.ttf", 5.25f);
+        mapping.put("assets/Iosevka-Light.ttf", 5.5f);
+        mapping.put("assets/Iosevka-Slab-Thin.ttf", 5.4f);
+        mapping.put("assets/Iosevka-Slab-Light.ttf", 5.4f);
+        mapping.put("assets/Iosevka-Wide.ttf", 5.25f);
+        mapping.put("assets/Iosevka-Wide-Slab.ttf", 5.2f);
+        mapping.put("assets/Iosevka-Wide-Light.ttf", 5.25f);
+        mapping.put("assets/Iosevka-Wide-Slab-Light.ttf", 5.25f);
+        mapping.put("assets/SourceCodePro-Medium.otf", 6.65f);
+        mapping.put("assets/DejaVuSansMono.ttf", 4.85f);
+        */
+        //mapping.put("assets/Galaxsea-Starlight-Mono-v3_1.ttf", 12f);
+        // "assets/BoxedIn.ttf" // 12f
+
+        try {
+            int downscale = 3, mainSize = 2048, bigSize = mainSize << downscale;
+            {
+                BufferedImage image = new BufferedImage(bigSize, bigSize, BufferedImage.TYPE_4BYTE_ABGR);
+                Graphics2D g = image.createGraphics();
+
+                FileHandle[] fontFiles = {
+                        Gdx.files.local(fonts[0]),
+                        Gdx.files.local(fonts[1]),
+                        Gdx.files.local(fonts[2]),
+                        Gdx.files.local(fonts[3]),
+                };
+                Font[] font = {
+                        Font.createFont(Font.TRUETYPE_FONT, fontFiles[0].file()).deriveFont(64f * fontSize),
+                        Font.createFont(Font.TRUETYPE_FONT, fontFiles[1].file()).deriveFont(64f * fontSize),
+                        Font.createFont(Font.TRUETYPE_FONT, fontFiles[2].file()).deriveFont(64f * fontSize),
+                        Font.createFont(Font.TRUETYPE_FONT, fontFiles[3].file()).deriveFont(64f * fontSize),
+                };
+                BufferedImage tImage = new BufferedImage(512, 512, BufferedImage.TYPE_4BYTE_ABGR);
+                Graphics2D tGraphics = tImage.createGraphics();
+                tGraphics.setFont(font[0]);
+                FontRenderContext frc = tGraphics.getFontRenderContext();
+                char[] tc = new char[]{'\u253C'}, all = new char[0x4000];
+                for (char i = 0; i <= 0x3fff; i++) {
+                    all[i] = i;
+                }
+                int missing = font[0].getMissingGlyphCode();
+                GlyphVector gv = font[0].createGlyphVector(frc, all), gv2 = font[0].createGlyphVector(frc, tc);
+                Rectangle2D bounds = null, xBounds;
+                boolean incomplete = true;
+                CharArray chars = new CharArray(1024);
+                if (gv2.getGlyphCode(0) != missing) { // cross shaped box drawing char, very large
+                    gv2 = font[0].createGlyphVector(frc, tc);
+                    bounds = gv2.getVisualBounds();
+                    incomplete = false;
+                }
+
+                tc[0] = 'x';
+                gv2 = font[0].createGlyphVector(frc, tc);
+                if (gv2.getGlyphCode(0) == missing) {
+                    tc[0] = 'X';
+                    gv2 = font[0].createGlyphVector(frc, tc);
+                    if (gv2.getGlyphCode(0) == missing)
+                        throw new IllegalArgumentException("Font is missing both 'x' and 'X'; at least one is needed to judge metrics.");
+                    xBounds = gv2.getVisualBounds();
+                } else {
+                    xBounds = gv2.getVisualBounds();
+                }
+
+                if (bounds == null)
+                    bounds = xBounds.getBounds2D();
+                else
+                    bounds = bounds.createUnion(xBounds.getBounds2D());
+
+                for (int face = 1; face < 4; face++) {
+                    tGraphics.setFont(font[face]);
+                    frc = tGraphics.getFontRenderContext();
+                    tc[0] = '\u253C';
+                    gv = font[face].createGlyphVector(frc, all);
+                    gv2 = font[face].createGlyphVector(frc, tc);
+                    if (gv2.getGlyphCode(0) != missing) {
+                        gv2 = font[face].createGlyphVector(frc, tc);
+                        bounds = bounds.createUnion(gv2.getVisualBounds());
+                        incomplete = false;
+                    }
+
+                    tc[0] = 'x';
+                    gv2 = font[0].createGlyphVector(frc, tc);
+                    if (gv2.getGlyphCode(0) == missing) {
+                        tc[0] = 'X';
+                        gv2 = font[0].createGlyphVector(frc, tc);
+                        if (gv2.getGlyphCode(0) == missing)
+                            throw new IllegalArgumentException("Font is missing both 'x' and 'X'; at least one is needed to judge metrics.");
+                        xBounds = xBounds.createUnion(gv2.getVisualBounds());
+                    } else {
+                        xBounds = xBounds.createUnion(gv2.getVisualBounds());
+                    }
+                }
+                IntIntMap aliases = new IntIntMap(512);
+                IntSet aliased = new IntSet(512);
+                for (int face = 0; face < 4; face++) {
+                    chars.add((char) (face << 14));
+                    for (int i = 32; i <= 0x3fff; i++) {
+                        if (gv.getGlyphCode(i) != missing && Character.isDefined(i)) {
+                            switch (Character.getDirectionality(i)) {
+                                case Character.DIRECTIONALITY_WHITESPACE:
+                                    if (i != 32)
+                                        break;
+                                case Character.DIRECTIONALITY_LEFT_TO_RIGHT:
+                                case Character.DIRECTIONALITY_EUROPEAN_NUMBER:
+                                case Character.DIRECTIONALITY_EUROPEAN_NUMBER_SEPARATOR:
+                                case Character.DIRECTIONALITY_EUROPEAN_NUMBER_TERMINATOR:
+                                case Character.DIRECTIONALITY_COMMON_NUMBER_SEPARATOR:
+                                case Character.DIRECTIONALITY_OTHER_NEUTRALS:
+                                case Character.DIRECTIONALITY_UNDEFINED:
+                                case Character.DIRECTIONALITY_SEGMENT_SEPARATOR:
+                                    if (Character.isSurrogate((char) i))
+                                        continue;
+                                    if (incomplete) {
+                                        if (Character.UnicodeBlock.of(i).equals(Character.UnicodeBlock.BOX_DRAWING)) {
+                                            tc[0] = (char) (i & 0x3fff);
+                                            gv2 = font[face & 1].createGlyphVector(frc, tc); // we don't use italic box drawing chars
+                                            if (gv2.getGlyphCode(0) != missing) {
+                                                chars.add((char) (i | face << 14));
+                                                bounds.add(gv2.getVisualBounds());
+                                                if(0 != (face & -2)) // only true if italic, which is aliased to regular or bold
+                                                {
+                                                    aliases.put((i | (face & 1) << 14), (i | face << 14));
+                                                    aliased.add((i | face << 14));
+                                                }
+                                            }
+                                        } else {
+                                            tc[0] = (char) (i & 0x3fff);
+                                            gv2 = font[face].createGlyphVector(frc, tc);
+                                            if (gv2.getGlyphCode(0) != missing) {
+                                                chars.add((char) (i | face << 14));
+                                                bounds.add(gv2.getVisualBounds());
+                                            }
+                                        }
+                                    } else {
+                                        if (Character.UnicodeBlock.of(i).equals(Character.UnicodeBlock.BOX_DRAWING)) {
+                                            if(0 != (face & -2)) // only true if italic, which is aliased to regular or bold
+                                            {
+                                                aliases.put((i | (face & 1) << 14), (i | face << 14));
+                                                aliased.add((i | face << 14));
+                                            }
+                                        }
+                                        chars.add((char) (i | face << 14));
+                                    }
+                            }
+                        }
+                    }
+                }
+//            chars.clear();
+//            chars.addAll('x', 'X', '┼', '.');
+                int bw = (((2 << downscale) + (int) bounds.getWidth()) >> downscale) << downscale,
+                        bh = (((2 << downscale) + (int) (bounds.getHeight())) >> downscale) << downscale,
+                        width = bigSize / (bw + (2 << downscale)), height = bigSize / (bh + (2 << downscale)),
+                        offTop = (int) (bounds.getMaxY() - xBounds.getMaxY()),
+                        baseline = (int) (bounds.getHeight() - xBounds.getMinY() + bounds.getMinY() + offTop); // + (1 << downscale)
+
+                System.out.println("bh: " + bh);
+                System.out.println("offTop: " + offTop);
+                System.out.println("baseline: " + baseline);
+
+                StringBuilder sb = new StringBuilder(0x10000);
+                sb.append("info face=\"").append(fonts[4]).append("\" size=-24 bold=0 italic=0 charset=\"\" unicode=1 stretchH=100 smooth=0 aa=1 padding=1,1,1,1 spacing=0,0 outline=0\n");
+                sb.append("common lineHeight=").append((bh >> downscale)).append(" base=").append(baseline >> downscale).append(" scaleW=1024 scaleH=1024 pages=1 packed=0 alphaChnl=0 redChnl=4 greenChnl=4 blueChnl=4\n");
+                sb.append("page id=0 file=\"").append(fonts[4]).append("-distance.png\"\n");
+                sb.append("chars count=").append(chars.size).append('\n');
+                BufferedImage board = new BufferedImage(bw, bh, BufferedImage.TYPE_4BYTE_ABGR);
+                Graphics2D gb = board.createGraphics();
+                g.clearRect(0, 0, bigSize, bigSize);
+                gb.clearRect(0, 0, bw, bh);
+                gb.setColor(Color.white);
+                gb.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+                gb.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
+                gb.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+
+                int i = 0, max = chars.size, face = -1;
+                char c, shown;
+                for (int y = 0; y < height && i < max; y++) {
+                    for (int x = 0; x < width && i < max; x++) {
+                        c = chars.get(i++);
+                        shown = (char)(c & 0x3fff);
+                        if (shown == 0) {
+                            ++face;
+                            gb.setFont(font[face]);
+                            if(face == 0) {
+                                gb.fillRect(0, 0, bw, bh);
+                                g.drawImage(board,
+                                        x * (bw + (2 << downscale)), //bw+(2<<downscale)
+                                        y * (bh + (2 << downscale)), //bh+(2<<downscale)
+                                        null);
+                            }
+                            //gb.drawString(String.valueOf(c), x * bw + 8, (y+1) * bh + 8);
+                            sb.append("char id=").append((int)c)
+                                    .append(" x=").append(0) //bw+(2<<downscale)
+                                    .append(" y=").append(0) //bh+(2<<downscale)
+                                    .append(" width=").append((bw >> downscale)) //bw+(2<<downscale)
+                                    .append(" height=").append((bh >> downscale))    //bh+(2<<downscale)
+                                    .append(" xoffset=-1 yOffset=-1 xadvance=").append(((bw) >> downscale))
+                                    .append(" page=0 chnl=15\n");
+                        } else if(!aliased.contains(c)) {
+                            gb.clearRect(0, 0, bw, bh);
+                            gb.drawString(String.valueOf(shown), 1 << downscale, baseline); // + (1 << downscale)
+                            // gb.drawString(String.valueOf(c), 0, baseline); // + (1 << downscale)
+                            g.drawImage(board,
+                                    x * (bw + (2 << downscale)), //bw+(2<<downscale)
+                                    y * (bh + (2 << downscale)), //bh+(2<<downscale)
+                                    null);
+                            //gb.drawString(String.valueOf(c), x * bw + 8, (y+1) * bh + 8);
+                            sb.append("char id=").append((int)c)
+                                    .append(" x=").append((x * (bw + (2 << downscale)) >> downscale)) //bw+(2<<downscale)
+                                    .append(" y=").append(y * (bh + (2 << downscale)) >> downscale) //bh+(2<<downscale)
+                                    .append(" width=").append((bw >> downscale)) //bw+(2<<downscale)
+                                    .append(" height=").append((bh >> downscale))    //bh+(2<<downscale)
+                                    .append(" xoffset=-1 yOffset=-1 xadvance=").append(((bw) >> downscale))
+                                    .append(" page=0 chnl=15\n");
+                            if(aliases.containsKey(c))
+                            {
+                                sb.append("char id=").append(aliases.get(c, c))
+                                        .append(" x=").append((x * (bw + (2 << downscale)) >> downscale)) //bw+(2<<downscale)
+                                        .append(" y=").append(y * (bh + (2 << downscale)) >> downscale) //bh+(2<<downscale)
+                                        .append(" width=").append((bw >> downscale)) //bw+(2<<downscale)
+                                        .append(" height=").append((bh >> downscale))    //bh+(2<<downscale)
+                                        .append(" xoffset=-1 yOffset=-1 xadvance=").append(((bw) >> downscale))
+                                        .append(" page=0 chnl=15\n");
+                            }
+                        }
+                        else {
+                            --x;
+                        }
+                    }
+                }
+                if (i < chars.size)
+                    System.out.println("Too many chars!");
+                System.out.println("Showed " + i + " chars out of " + chars.size);
+
+                //ImageIO.write(image, "PNG", new File(fontFile.nameWithoutExtension() + ".png"));
+                DistanceFieldGenerator dfg = new DistanceFieldGenerator();
+                dfg.setDownscale(1 << downscale);
+                dfg.setSpread((float) Math.pow(2, downscale) * 3.5f * MathUtils.log(5f, fontSize));
+
+                //use this instead for BoxedIn
+                //dfg.setSpread((float)Math.pow(2, downscale) * 3.5f * MathUtils.log(5f, 4f)); // MathUtils.log(5f, fontSize));
+                ImageIO.write(dfg.generateDistanceField(image), "PNG", new File(fonts[4] + "-distance.png"));
+                Gdx.files.local(fonts[4] + "-distance.fnt").writeString(sb.toString(), false);
+                //Gdx.files.local(fontFile.nameWithoutExtension() + "-contents.txt").writeString(String.valueOf(chars.toArray()), false);
+                System.out.println("Done!");
+            }
+        } catch (FontFormatException | IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public void createNormal() {
         super.create();
         ObjectFloatMap<String> mapping = new ObjectFloatMap<>(16);
@@ -330,7 +637,6 @@ public class GlamerTool extends ApplicationAdapter {
         mapping.put("assets/Iosevka_Full/Iosevka-Slab-BoldOblique.ttf", 2.55f);
         mapping.put("assets/Iosevka_Full/Iosevka-Slab-Oblique.ttf", 2.55f);
         mapping.put("assets/Iosevka_Full/Iosevka-Slab-Regular.ttf", 2.55f);
-
         /*
         mapping.put("assets/Iosevka_Full/Iosevka-Slab-ExtraLight.ttf", 2.55f);
         mapping.put("assets/Iosevka_Full/Iosevka-Slab-ExtraLightOblique.ttf", 2.55f);
@@ -388,11 +694,10 @@ public class GlamerTool extends ApplicationAdapter {
                 Graphics2D tGraphics = tImage.createGraphics();
                 tGraphics.setFont(font);
                 FontRenderContext frc = tGraphics.getFontRenderContext();
-                char[] tc = new char[]{'\u253C'}, all = new char[0x10000];
-                for (char i = 0; i < 0xffff; i++) {
+                char[] tc = new char[]{'\u253C'}, all = new char[0x4000];
+                for (char i = 0; i <= 0x3fff; i++) {
                     all[i] = i;
                 }
-                all[0xffff] = 0xffff;
                 int missing = font.getMissingGlyphCode();
                 GlyphVector gv = font.createGlyphVector(frc, all), gv2 = font.createGlyphVector(frc, tc);
                 Rectangle2D bounds = null, xBounds;
@@ -428,7 +733,7 @@ public class GlamerTool extends ApplicationAdapter {
             }*/
                 if (bounds == null)
                     bounds = xBounds.getBounds2D();
-                for (int i = 32; i <= 0xffff; i++) {
+                for (int i = 32; i <= 0x3fff; i++) {
                     if (gv.getGlyphCode(i) != missing && Character.isDefined(i)) {
                         switch (Character.getDirectionality(i)) {
                             case Character.DIRECTIONALITY_WHITESPACE:
