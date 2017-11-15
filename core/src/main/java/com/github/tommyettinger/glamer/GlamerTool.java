@@ -310,6 +310,12 @@ public class GlamerTool extends ApplicationAdapter {
         super.create();
         String[] fonts = {
 
+                "assets/GoMono-Regular.ttf",
+                "assets/GoMono-Bold.ttf",
+                "assets/GoMono-Italic.ttf",
+                "assets/GoMono-BoldItalic.ttf",
+                "GoMono-Family",
+
                 "assets/Iosevka_Full/Iosevka-Regular.ttf",
                 "assets/Iosevka_Full/Iosevka-Bold.ttf",
                 "assets/Iosevka_Full/Iosevka-Oblique.ttf",
@@ -324,7 +330,7 @@ public class GlamerTool extends ApplicationAdapter {
                 "Iosevka-Slab-Family",
 
         };
-        float fontSize = 2.66f;
+        float fontSize = 5.33f;
 
         /*
         mapping.put("assets/Iosevka_Full/Iosevka-Bold.ttf", 2.55f);
@@ -632,11 +638,13 @@ public class GlamerTool extends ApplicationAdapter {
         mapping.put("assets/Iosevka_Full/Iosevka-Medium.ttf", 2.55f);
         mapping.put("assets/Iosevka_Full/Iosevka-MediumOblique.ttf", 2.55f);
         */
-
+        mapping.put("assets/GoMono-Regular.ttf", 5.33f);
+        /*
         mapping.put("assets/Iosevka_Full/Iosevka-Slab-Bold.ttf", 2.55f);
         mapping.put("assets/Iosevka_Full/Iosevka-Slab-BoldOblique.ttf", 2.55f);
         mapping.put("assets/Iosevka_Full/Iosevka-Slab-Oblique.ttf", 2.55f);
         mapping.put("assets/Iosevka_Full/Iosevka-Slab-Regular.ttf", 2.55f);
+        */
         /*
         mapping.put("assets/Iosevka_Full/Iosevka-Slab-ExtraLight.ttf", 2.55f);
         mapping.put("assets/Iosevka_Full/Iosevka-Slab-ExtraLightOblique.ttf", 2.55f);
@@ -666,7 +674,7 @@ public class GlamerTool extends ApplicationAdapter {
         // "assets/BoxedIn.ttf" // 12f
 
         try {
-            int downscale = 3, mainSize = 1024, bigSize = mainSize << downscale;
+            int downscale = 3, mainSize = 2048, bigSize = mainSize << downscale;
             for (ObjectFloatMap.Entry<String> entry : mapping) {
                 float fontSize = entry.value;
 
