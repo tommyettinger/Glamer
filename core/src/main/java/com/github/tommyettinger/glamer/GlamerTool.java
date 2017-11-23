@@ -309,28 +309,28 @@ public class GlamerTool extends ApplicationAdapter {
     public void createFamily() {
         super.create();
         String[] fonts = {
-
+/*
                 "assets/GoMono-Regular.ttf",
                 "assets/GoMono-Bold.ttf",
                 "assets/GoMono-Italic.ttf",
                 "assets/GoMono-BoldItalic.ttf",
-                "GoMono-Family",
-
+                "GoMono-Family", //5.33f
+*/
                 "assets/Iosevka_Full/Iosevka-Regular.ttf",
                 "assets/Iosevka_Full/Iosevka-Bold.ttf",
                 "assets/Iosevka_Full/Iosevka-Oblique.ttf",
                 "assets/Iosevka_Full/Iosevka-BoldOblique.ttf",
-                "Iosevka-Family",
+                "Iosevka-Family", //2.66f
 
 
                 "assets/Iosevka_Full/Iosevka-Slab-Regular.ttf",
                 "assets/Iosevka_Full/Iosevka-Slab-Bold.ttf",
                 "assets/Iosevka_Full/Iosevka-Slab-Oblique.ttf",
                 "assets/Iosevka_Full/Iosevka-Slab-BoldOblique.ttf",
-                "Iosevka-Slab-Family",
+                "Iosevka-Slab-Family", //2.66f
 
         };
-        float fontSize = 5.33f;
+        float fontSize = 2.66f;
 
         /*
         mapping.put("assets/Iosevka_Full/Iosevka-Bold.ttf", 2.55f);
@@ -412,7 +412,7 @@ public class GlamerTool extends ApplicationAdapter {
                 GlyphVector gv = font[0].createGlyphVector(frc, all), gv2 = font[0].createGlyphVector(frc, tc);
                 Rectangle2D bounds = null, xBounds;
                 boolean incomplete = true;
-                CharArray chars = new CharArray(1024);
+                CharArray chars = new CharArray(1024), regularChars = new CharArray(1024);
                 if (gv2.getGlyphCode(0) != missing) { // cross shaped box drawing char, very large
                     gv2 = font[0].createGlyphVector(frc, tc);
                     bounds = gv2.getVisualBounds();
@@ -464,6 +464,8 @@ public class GlamerTool extends ApplicationAdapter {
                 IntSet aliased = new IntSet(512);
                 for (int face = 0; face < 4; face++) {
                     chars.add((char) (face << 14));
+                    if(face == 0)
+                        regularChars.add((char) 0);
                     for (int i = 32; i <= 0x3fff; i++) {
                         if (gv.getGlyphCode(i) != missing && Character.isDefined(i)) {
                             switch (Character.getDirectionality(i)) {
@@ -486,6 +488,8 @@ public class GlamerTool extends ApplicationAdapter {
                                             gv2 = font[face & 1].createGlyphVector(frc, tc); // we don't use italic box drawing chars
                                             if (gv2.getGlyphCode(0) != missing) {
                                                 chars.add((char) (i | face << 14));
+                                                if(face == 0)
+                                                    regularChars.add((char)i);
                                                 bounds.add(gv2.getVisualBounds());
                                                 if(0 != (face & -2)) // only true if italic, which is aliased to regular or bold
                                                 {
@@ -498,6 +502,8 @@ public class GlamerTool extends ApplicationAdapter {
                                             gv2 = font[face].createGlyphVector(frc, tc);
                                             if (gv2.getGlyphCode(0) != missing) {
                                                 chars.add((char) (i | face << 14));
+                                                if(face == 0)
+                                                    regularChars.add((char)i);
                                                 bounds.add(gv2.getVisualBounds());
                                             }
                                         }
@@ -510,6 +516,9 @@ public class GlamerTool extends ApplicationAdapter {
                                             }
                                         }
                                         chars.add((char) (i | face << 14));
+                                        if(face == 0)
+                                            regularChars.add((char)i);
+
                                     }
                             }
                         }
@@ -610,7 +619,7 @@ public class GlamerTool extends ApplicationAdapter {
                 //dfg.setSpread((float)Math.pow(2, downscale) * 3.5f * MathUtils.log(5f, 4f)); // MathUtils.log(5f, fontSize));
                 ImageIO.write(dfg.generateDistanceField(image), "PNG", new File(fonts[4] + "-distance.png"));
                 Gdx.files.local(fonts[4] + "-distance.fnt").writeString(sb.toString(), false);
-                //Gdx.files.local(fontFile.nameWithoutExtension() + "-contents.txt").writeString(String.valueOf(chars.toArray()), false);
+                Gdx.files.local(fonts[4] + "-contents.txt").writeString(String.valueOf(regularChars.toArray()), false);
                 System.out.println("Done!");
             }
         } catch (FontFormatException | IOException e) {
