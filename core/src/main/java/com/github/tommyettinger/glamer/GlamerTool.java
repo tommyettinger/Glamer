@@ -89,8 +89,8 @@ public class GlamerTool extends ApplicationAdapter {
 
     @Override
     public void create() {
-        createFamily();
-        //createNormal();
+        //createFamily();
+        createNormal();
     }
 
     // "msdfgen.exe -font " + filename + " " + codepoint + " -scale 2.5 -translate 2 4.5 -size 32 64 -o " + codepoint + ".png"
@@ -647,7 +647,11 @@ public class GlamerTool extends ApplicationAdapter {
         mapping.put("assets/Iosevka_Full/Iosevka-Medium.ttf", 2.55f);
         mapping.put("assets/Iosevka_Full/Iosevka-MediumOblique.ttf", 2.55f);
         */
-        mapping.put("assets/GoMono-Regular.ttf", 5.33f);
+        mapping.put("assets/SourceHanCodeJP-Regular.otf", 1.42f);
+        mapping.put("assets/SourceHanCodeJP-Bold.otf", 1.42f);
+        mapping.put("assets/SourceHanCodeJP-RegularIt.otf", 1.42f);
+        mapping.put("assets/SourceHanCodeJP-BoldIt.otf", 1.42f);
+        //mapping.put("assets/GoMono-Regular.ttf", 5.33f);
         /*
         mapping.put("assets/Iosevka_Full/Iosevka-Slab-Bold.ttf", 2.55f);
         mapping.put("assets/Iosevka_Full/Iosevka-Slab-BoldOblique.ttf", 2.55f);
@@ -683,7 +687,7 @@ public class GlamerTool extends ApplicationAdapter {
         // "assets/BoxedIn.ttf" // 12f
 
         try {
-            int downscale = 3, mainSize = 2048, bigSize = mainSize << downscale;
+            int downscale = 2, mainSize = 4096, bigSize = mainSize << downscale;
             for (ObjectFloatMap.Entry<String> entry : mapping) {
                 float fontSize = entry.value;
 
@@ -711,9 +715,9 @@ public class GlamerTool extends ApplicationAdapter {
                 Graphics2D tGraphics = tImage.createGraphics();
                 tGraphics.setFont(font);
                 FontRenderContext frc = tGraphics.getFontRenderContext();
-                char[] tc = new char[]{'\u253C'}, all = new char[0x4000];
-                for (char i = 0; i <= 0x3fff; i++) {
-                    all[i] = i;
+                char[] tc = new char[]{'\u253C'}, all = new char[0x10000];
+                for (int i = 0; i <= 0xffff; i++) {
+                    all[i] = (char)i;
                 }
                 int missing = font.getMissingGlyphCode();
                 GlyphVector gv = font.createGlyphVector(frc, all), gv2 = font.createGlyphVector(frc, tc);
@@ -723,7 +727,7 @@ public class GlamerTool extends ApplicationAdapter {
                 if (gv2.getGlyphCode(0) != missing) {
                     gv2 = font.createGlyphVector(frc, tc);
                     bounds = gv2.getVisualBounds();
-                    incomplete = false;
+                    //incomplete = false;
                 }
 
                 tc[0] = 'x';
@@ -750,13 +754,14 @@ public class GlamerTool extends ApplicationAdapter {
             }*/
                 if (bounds == null)
                     bounds = xBounds.getBounds2D();
-                for (int i = 32; i <= 0x3fff; i++) {
+                for (int i = 32; i <= 0xffff; i++) {
                     if (gv.getGlyphCode(i) != missing && Character.isDefined(i)) {
                         switch (Character.getDirectionality(i)) {
                             case Character.DIRECTIONALITY_WHITESPACE:
                                 if (i != 32)
                                     break;
                             case Character.DIRECTIONALITY_LEFT_TO_RIGHT:
+                                if(i == '〱' || i == '〲') break;
                             case Character.DIRECTIONALITY_EUROPEAN_NUMBER:
                             case Character.DIRECTIONALITY_EUROPEAN_NUMBER_SEPARATOR:
                             case Character.DIRECTIONALITY_EUROPEAN_NUMBER_TERMINATOR:
@@ -859,11 +864,26 @@ public class GlamerTool extends ApplicationAdapter {
                 //ImageIO.write(image, "PNG", new File(fontFile.nameWithoutExtension() + ".png"));
                 DistanceFieldGenerator dfg = new DistanceFieldGenerator();
                 dfg.setDownscale(1 << downscale);
-                dfg.setSpread((float) Math.pow(2, downscale) * 3.5f * MathUtils.log(5f, fontSize));
+                dfg.setSpread((float) Math.pow(2, downscale) * 8f * MathUtils.log(5f, fontSize));
+                //dfg.setSpread((float) Math.pow(2, downscale) * 3.5f * MathUtils.log(5f, fontSize));
 
                 //use this instead for BoxedIn
                 //dfg.setSpread((float)Math.pow(2, downscale) * 3.5f * MathUtils.log(5f, 4f)); // MathUtils.log(5f, fontSize));
-                ImageIO.write(dfg.generateDistanceField(image), "PNG", new File(fontFile.nameWithoutExtension() + "-distance.png"));
+                BufferedImage dfgi = dfg.generateDistanceField(image);
+                ImageIO.write(dfgi, "PNG", new File(fontFile.nameWithoutExtension() + "-distance.png"));
+                LookupTable lookup = new LookupTable(0, 4) {
+                    @Override
+                    public int[] lookupPixel(int[] src, int[] dest) {
+                        dest[0] = (255 - src[0]);
+                        dest[1] = (255 - src[1]);
+                        dest[2] = (255 - src[2]);
+                        dest[3] = Math.min(255, (int) (Math.sqrt(src[3]) * 17));
+                        return dest;
+                    }
+                };
+                LookupOp op = new LookupOp(lookup, new RenderingHints(null));
+                ImageIO.write(op.filter(dfgi, null), "PNG", new File(fontFile.nameWithoutExtension() + "-distance-preview.png"));
+
                 Gdx.files.local(fontFile.nameWithoutExtension() + "-distance.fnt").writeString(sb.toString(), false);
                 sb.setLength(0);
 //            char cc;
