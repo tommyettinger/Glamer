@@ -877,7 +877,7 @@ public class GlamerTool extends ApplicationAdapter {
                         dest[0] = (255 - src[0]);
                         dest[1] = (255 - src[1]);
                         dest[2] = (255 - src[2]);
-                        dest[3] = Math.min(255, (int) (Math.sqrt(src[3]) * 17));
+                        dest[3] = Math.max(0, Math.min(255, (int) (Math.pow(src[3] * 0x1p-8, 3.0) * 750 - 10)));
                         return dest;
                     }
                 };
