@@ -89,12 +89,22 @@ public class GlamerTool extends ApplicationAdapter {
 
     @Override
     public void create() {
+        create_msdf();
         //createFamily();
-        createNormal();
+        //createNormal();
     }
 
     // "msdfgen.exe -font " + filename + " " + codepoint + " -scale 2.5 -translate 2 4.5 -size 32 64 -o " + codepoint + ".png"
     // msdfgen.exe -font assets\Iosevka-Slab-Bold.ttf 64 -scale 2.5 -translate 2 4.5 -size 32 64 -o 64.png
+
+    /**
+     * If using this method, you must have installed node.js and npm, then run this command in Glamer's project root:
+     * <br>
+     * {@code npm install msdf-bmfont-xml}
+     * <br>
+     * This will make soimy's MSDF JSON BMFont generator available to Glamer to run, and then Glamer will convert the
+     * JSON BMFonts to .fnt files that libGDX can read. 
+     */
     public void create_msdf() {
         super.create();
         try {
@@ -104,60 +114,86 @@ public class GlamerTool extends ApplicationAdapter {
             // change command[3] to the decimal codepoint printed as a string, such as "33"
             // change command[5] to "3.25" after processing DJV
             // change command[8] to "7.5" after processing DJV
-            List<String> command = Arrays.asList("msdfgen.exe", "-font", "assets/DejaVuSansMono-Bold.ttf", "33", "-scale", "1.6", "-translate", "3.25", "15", "-size", "44", "92", "-o", "temp.png");
+            
+            //List<String> command = Arrays.asList("msdfgen.exe", "-font", "assets/DejaVuSansMono-Bold.ttf", "33", "-scale", "1.6", "-translate", "3.25", "15", "-size", "44", "92", "-o", "temp.png");
             //List<String> command = Arrays.asList("msdfgen.exe", "-font", "assets/DejaVuSansMono-Bold.ttf", "33", "-scale", "3.2", "-translate", "3.5", "7.5", "-size", "44", "92", "-o", "temp.png");
+            List<String> command = Arrays.asList("node", "node_modules/msdf-bmfont-xml/cli.js", "-f","json", "-i","assets/Iosevka-Slab-contents.txt", "-m","2048,2048", "-s","56", "assets/Iosevka-Slab-Oblique.ttf");
             String filename, baseName;
-            for (int nm = 0; nm < filenames.length; nm++) {
-                filename = filenames[nm];
-                baseName = baseNames[nm];
-                if (nm == 4) {
-                    command.set(5, "3.2");
-                    command.set(7, "3.5");
-                    command.set(8, "7.5");
-                } else if (nm == 8) {
-                    command.set(5, "3.75");
-                    command.set(7, "3.25");
-                    command.set(8, "5");
-                }
-                command.set(2, filename);
+            //for (int nm = 0; nm < filenames.length; nm++)
+            {
+                baseName = "Iosevka-Slab-Oblique";
+//                filename = filenames[nm];
+//                baseName = baseNames[nm];
+//                if (nm == 4) {
+//                    command.set(5, "3.2");
+//                    command.set(7, "3.5");
+//                    command.set(8, "7.5");
+//                } else if (nm == 8) {
+//                    command.set(5, "3.75");
+//                    command.set(7, "3.25");
+//                    command.set(8, "5");
+//                }
+//                command.set(2, filename);
+                ProcessBuilder proc = new ProcessBuilder(command);
+                Process p = proc.directory(new File(".")).start();
+                p.waitFor();
+                Gdx.files.local("assets/" + baseName + ".png").moveTo(Gdx.files.local(baseName + "-msdf.png"));
+                Gdx.files.local("assets/" + baseName + ".json").moveTo(Gdx.files.local(baseName + ".json"));
+                JsonReader jsonReader = new JsonReader();
+                JsonValue json = jsonReader.parse(Gdx.files.local(baseName + ".json"));
                 int width = 42, height = 21, baseline = 24;
+                JsonValue info = json.get("info");
 
                 StringBuilder sb = new StringBuilder(0x10000);
-                sb.append("info face=\"").append(baseName).append("\" size=-64 bold=0 italic=0 charset=\"\" unicode=1 stretchH=100 smooth=0 aa=1 padding=0,0,0,0 spacing=0,0 outline=0\n");
-                sb.append("common lineHeight=").append(80).append(" base=").append(baseline).append(" scaleW=1024 scaleH=1024 pages=1 packed=0 alphaChnl=0 redChnl=1 greenChnl=2 blueChnl=4\n");
+                sb.append("info face=\"").append(baseName).append("\" size=").append(info.getInt("size")).append(" bold=0 italic=0 charset=\"\" unicode=1 stretchH=100 smooth=0 aa=1 padding=6,6,6,6 spacing=0,0 outline=0\n");
+                JsonValue common = json.get("common");
+                sb.append("common lineHeight=").append(common.getInt("lineHeight")).append(" base=").append(common.getInt("base")).append(" scaleW=2048 scaleH=2048 pages=1 packed=0 alphaChnl=0 redChnl=1 greenChnl=2 blueChnl=4\n");
                 sb.append("page id=0 file=\"").append(baseName).append("-msdf.png\"\n");
-                sb.append("chars count=").append(allChars.length()).append('\n');
-                BufferedImage image = new BufferedImage(mainSize, mainSize, BufferedImage.TYPE_4BYTE_ABGR),
-                        board;
-                Graphics2D g = image.createGraphics();
-                g.clearRect(0, 0, mainSize, mainSize);
-                int i = 0, max = allChars.length();
-                int c;
-                ProcessBuilder proc = new ProcessBuilder(command);
-                for (int y = 0; y < height && i < max; y++) {
-                    for (int x = 0; x < width && i < max; x++) {
-                        c = allChars.charAt(i++);
-                        command.set(3, String.valueOf(c));
-                        proc.start().waitFor();
-                        board = ImageIO.read(new File("temp.png"));
-                        g.drawImage(board,
-                                2 + x * (4 + blockWidth), //bw+(2<<downscale)
-                                2 + y * (4 + blockHeight), //bh+(2<<downscale)
-                                null);
-                        //gb.drawString(String.valueOf(c), x * bw + 8, (y+1) * bh + 8);
-                        sb.append("char id=").append(c)
-                                .append(" x=").append(2 + x * (4 + blockWidth)) //bw+(2<<downscale)
-                                .append(" y=").append(2 + y * (4 + blockHeight))
-                                .append(" width=").append(blockWidth - 4) //bw+(2<<downscale)
-                                .append(" height=").append(blockHeight)
-                                .append(" xoffset=12 yOffset=-1 xadvance=").append(24)
-                                .append(" page=0 chnl=15\n");
-                    }
+                String[] allStrings = info.get("charset").asStringArray();
+                sb.append("chars count=").append(allStrings.length).append('\n');
+                JsonValue cs = json.get("chars");
+                for(JsonValue jsv : cs) {
+                    sb.append("char id=").append(jsv.getInt("id"))
+                            .append(" x=").append(jsv.getInt("x")) //bw+(2<<downscale)
+                            .append(" y=").append(jsv.getInt("y"))
+                            .append(" width=").append(jsv.getInt("width")) //bw+(2<<downscale)
+                            .append(" height=").append(jsv.getInt("height"))
+                            .append(" xoffset=").append(jsv.getInt("xoffset"))
+                            .append(" yOffset=").append(jsv.getInt("yoffset"))
+                            .append(" xadvance=").append(jsv.getInt("xadvance"))
+                            .append(" page=0 chnl=15\n");
                 }
-                if (i < allChars.length())
-                    System.out.println("Too many chars!");
-                ImageIO.write(image, "PNG", new File(baseName + "-msdf.png"));
-                //Gdx.files.local(baseName + "-msdf.fnt").writeString(sb.toString(), false);
+//                BufferedImage image = new BufferedImage(mainSize, mainSize, BufferedImage.TYPE_4BYTE_ABGR),
+//                        board;
+//                Graphics2D g = image.createGraphics();
+//                g.clearRect(0, 0, mainSize, mainSize);
+//                int i = 0, max = allChars.length();
+//                int c;
+////                ProcessBuilder proc = new ProcessBuilder(command);
+//                for (int y = 0; y < height && i < max; y++) {
+//                    for (int x = 0; x < width && i < max; x++) {
+//                        c = allChars.charAt(i++);
+//                        command.set(3, String.valueOf(c));
+//                        proc.start().waitFor();
+//                        board = ImageIO.read(new File("temp.png"));
+//                        g.drawImage(board,
+//                                2 + x * (4 + blockWidth), //bw+(2<<downscale)
+//                                2 + y * (4 + blockHeight), //bh+(2<<downscale)
+//                                null);
+//                        //gb.drawString(String.valueOf(c), x * bw + 8, (y+1) * bh + 8);
+//                        sb.append("char id=").append(c)
+//                                .append(" x=").append(2 + x * (4 + blockWidth)) //bw+(2<<downscale)
+//                                .append(" y=").append(2 + y * (4 + blockHeight))
+//                                .append(" width=").append(blockWidth - 4) //bw+(2<<downscale)
+//                                .append(" height=").append(blockHeight)
+//                                .append(" xoffset=12 yOffset=-1 xadvance=").append(24)
+//                                .append(" page=0 chnl=15\n");
+//                    }
+//                }
+//                if (i < allChars.length())
+//                    System.out.println("Too many chars!");
+//                ImageIO.write(image, "PNG", new File(baseName + "-msdf.png"));
+                Gdx.files.local(baseName + "-msdf.fnt").writeString(sb.toString(), false);
                 sb.setLength(0);
 //            char cc;
 //            for (int j = 0; j < chars.size; j++) {
@@ -167,9 +203,7 @@ public class GlamerTool extends ApplicationAdapter {
                 //Gdx.files.local(baseName + "-contents.txt").writeString(allChars, false);
             }
             System.out.println("Done!");
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
