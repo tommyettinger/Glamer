@@ -89,7 +89,8 @@ public class GlamerTool extends ApplicationAdapter {
 
     @Override
     public void create() {
-        create_msdf();
+        create_msdf_family();
+        //create_msdf();
         //createFamily();
         //createNormal();
     }
@@ -108,12 +109,12 @@ public class GlamerTool extends ApplicationAdapter {
                 processed = "win32";
             else if(os.contains("ac"))
                 processed = "darwin";
-            
+
             List<String> command = Arrays.asList(processed + "/msdfgen", "-font", "assets/DejaVuSansMono-Bold.ttf", "33", "-scale", "2", "-translate", "1.5", "7", "-size", "20", "52", "-o", "temp.png");
             //List<String> command = Arrays.asList("msdfgen.exe", "-font", "assets/DejaVuSansMono-Bold.ttf", "33", "-scale", "3.2", "-translate", "3.5", "7.5", "-size", "44", "92", "-o", "temp.png");
             String filename, baseName;
             //for (int nm = 0; nm < filenames.length; nm++) {
-            for (int nm = 4; nm < 12; nm++) {    
+            for (int nm = 4; nm < 12; nm++) {
                 filename = filenames[nm];
                 baseName = baseNames[nm];
 //                if (nm == 4) {
@@ -180,15 +181,220 @@ public class GlamerTool extends ApplicationAdapter {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    public void create_msdf_family() {
+        super.create();
+        String[] fonts = {
+/*
+                "assets/GoMono-Regular.ttf",
+                "assets/GoMono-Bold.ttf",
+                "assets/GoMono-Italic.ttf",
+                "assets/GoMono-BoldItalic.ttf",
+                "GoMono-Family", //5.33f
+*/
+//                "assets/Iosevka_Full/Iosevka-Regular.ttf",
+//                "assets/Iosevka_Full/Iosevka-Bold.ttf",
+//                "assets/Iosevka_Full/Iosevka-Oblique.ttf",
+//                "assets/Iosevka_Full/Iosevka-BoldOblique.ttf",
+//                "Iosevka-Family", //2.66f
+
+
+                "assets/Iosevka_Full/Iosevka-Slab-Regular.ttf",
+                "assets/Iosevka_Full/Iosevka-Slab-Bold.ttf",
+                "assets/Iosevka_Full/Iosevka-Slab-Oblique.ttf",
+                "assets/Iosevka_Full/Iosevka-Slab-BoldOblique.ttf",
+                "Iosevka-Slab-Family", //2.66f
+
+        };
+        float fontSize = 2.66f;
+        int mainSize = 4096,
+                blockWidth = 20, blockHeight = 52;
+        String os = System.getProperty("os.name"), processed = "linux";
+        if(os.contains("indows"))
+            processed = "win32";
+        else if(os.contains("ac"))
+            processed = "darwin";
+        
+        // change command[2] to filename
+        // change command[3] to the decimal codepoint printed as a string, such as "33"
+        List<String> command = Arrays.asList(processed + "/msdfgen", "-font", "assets/DejaVuSansMono-Bold.ttf", "33", "-scale", "2", "-translate", "1.5", "7", "-size", "20", "52", "-o", "temp.png");
+        //List<String> command = Arrays.asList("msdfgen.exe", "-font", "assets/DejaVuSansMono-Bold.ttf", "33", "-scale", "3.2", "-translate", "3.5", "7.5", "-size", "44", "92", "-o", "temp.png");
+        String filename, baseName;
+
+        try {
+            //int downscale = 3, mainSize = 2048, bigSize = mainSize << downscale;
+            {
+                FileHandle[] fontFiles = {
+                        Gdx.files.local(fonts[0]),
+                        Gdx.files.local(fonts[1]),
+                        Gdx.files.local(fonts[2]),
+                        Gdx.files.local(fonts[3]),
+                };
+                Font[] font = {
+                        Font.createFont(Font.TRUETYPE_FONT, fontFiles[0].file()).deriveFont(64f * fontSize),
+                        Font.createFont(Font.TRUETYPE_FONT, fontFiles[1].file()).deriveFont(64f * fontSize),
+                        Font.createFont(Font.TRUETYPE_FONT, fontFiles[2].file()).deriveFont(64f * fontSize),
+                        Font.createFont(Font.TRUETYPE_FONT, fontFiles[3].file()).deriveFont(64f * fontSize),
+                };
+                command.set(2, fonts[0]);
+                allChars = Gdx.files.local("assets/Iosevka-Slab-contents.txt").readString();
+                int width = 170, height = 72, baseline = 56, idx = 0, c = 0;
+                
+                CharArray chars = new CharArray(1024), regularChars = new CharArray(1024);
+                IntIntMap aliases = new IntIntMap(512);
+                IntSet aliased = new IntSet(512);
+                for (int face = 0; face < 4; face++) {
+                    chars.add((char) (face << 14));
+                    if(face == 0)
+                        regularChars.add((char) 0);
+                    idx = 0;
+                    c = allChars.charAt(idx);
+                    while (c < 0x4000) {
+                        c = allChars.charAt(idx++);
+                        if (Character.isDefined(c)) {
+                            switch (Character.getDirectionality(c)) {
+                                case Character.DIRECTIONALITY_WHITESPACE:
+                                    if (c != 32)
+                                        break;
+                                case Character.DIRECTIONALITY_LEFT_TO_RIGHT:
+                                case Character.DIRECTIONALITY_EUROPEAN_NUMBER:
+                                case Character.DIRECTIONALITY_EUROPEAN_NUMBER_SEPARATOR:
+                                case Character.DIRECTIONALITY_EUROPEAN_NUMBER_TERMINATOR:
+                                case Character.DIRECTIONALITY_COMMON_NUMBER_SEPARATOR:
+                                case Character.DIRECTIONALITY_OTHER_NEUTRALS:
+                                case Character.DIRECTIONALITY_UNDEFINED:
+                                case Character.DIRECTIONALITY_SEGMENT_SEPARATOR:
+                                    if (Character.isSurrogate((char) c))
+                                        continue;
+                                        if (Character.UnicodeBlock.of(c).equals(Character.UnicodeBlock.BOX_DRAWING)) {
+                                            if(0 != (face & -2)) // only true if italic, which is aliased to regular or bold
+                                            {
+                                                aliases.put((c | (face & 1) << 14), (c | face << 14));
+                                                aliased.add((c | face << 14));
+                                            }
+                                        }
+                                        chars.add((char) (c | face << 14));
+                                        if(face == 0)
+                                            regularChars.add((char)c);
+                                        
+                            }
+                        }
+                    }
+                }
+                int max = chars.size;
+                StringBuilder sb = new StringBuilder(0x10000);
+                sb.append("info face=\"").append(fonts[4]).append("\" size=-").append(blockHeight)
+                        .append(" bold=0 italic=0 charset=\"\" unicode=1 stretchH=100 smooth=0 aa=1 padding=0,0,0,0 spacing=0,0 outline=0\n");
+                sb.append("common lineHeight=").append(42) // very tricky to get right
+                        .append(" base=").append(baseline)
+                        .append(" scaleW=4096 scaleH=4096 pages=1 packed=0 alphaChnl=0 redChnl=1 greenChnl=2 blueChnl=4\n");
+                sb.append("page id=0 file=\"").append(fonts[4]).append("-msdf.png\"\n");
+                sb.append("chars count=").append(max).append('\n');
+                BufferedImage image = new BufferedImage(mainSize, mainSize, BufferedImage.TYPE_4BYTE_ABGR),
+                        board;
+                Graphics2D g = image.createGraphics();
+                g.clearRect(0, 0, mainSize, mainSize);
+                ProcessBuilder proc = new ProcessBuilder(command);
+//                for (int y = 0; y < height && idx < max; y++) {
+//                    for (int x = 0; x < width && idx < max; x++) {
+//                        c = allChars.charAt(idx++);
+//                        command.set(3, String.valueOf(c));
+//                        proc.start().waitFor();
+//                        board = ImageIO.read(new File("temp.png"));
+//                        g.drawImage(board,
+//                                2 + x * (4 + blockWidth), //bw+(2<<downscale)
+//                                2 + y * (4 + blockHeight), //bh+(2<<downscale)
+//                                null);
+//                        sb.append("char id=").append(c)
+//                                .append(" x=").append(2 + x * (4 + blockWidth)) //bw+(2<<downscale)
+//                                .append(" y=").append(2 + y * (4 + blockHeight))
+//                                .append(" width=").append(blockWidth + 2) //bw+(2<<downscale)
+//                                .append(" height=").append(blockHeight)
+//                                .append(" xoffset=0 yOffset=-1 xadvance=").append(blockWidth + 2)
+//                                .append(" page=0 chnl=15\n");
+//                    }
+//                }
+                
+                int i = 0, face = -1;
+                int shown;
+                for (int y = 0; y < height && i < max; y++) {
+                    for (int x = 0; x < width && i < max; x++) {
+                        c = chars.get(i++);
+                        shown = (c & 0x3fff);
+                        if (shown == 0) {
+                            ++face;
+                            command.set(2, fonts[face]);
+                            if(face == 0) {
+                                g.setColor(Color.white);
+                                g.fillRect(2, 2, blockWidth, blockHeight);
+                            }
+                            else 
+                                x--;
+                            //gb.drawString(String.valueOf(c), x * bw + 8, (y+1) * bh + 8);
+                            sb.append("char id=").append(c)
+                                    .append(" x=").append(2) //bw+(2<<downscale)
+                                    .append(" y=").append(2) //bh+(2<<downscale)
+                                    .append(" width=").append(blockWidth + 2) //bw+(2<<downscale)
+                                    .append(" height=").append(blockHeight)
+                                    .append(" xoffset=0 yOffset=-1 xadvance=").append(blockWidth + 2)
+                                    .append(" page=0 chnl=15\n");
+                        } else if(!aliased.contains(c)) {
+                            String st = String.valueOf(shown);
+                            command.set(3, st);
+                            proc.start().waitFor();
+                            board = ImageIO.read(new File("temp.png"));
+                            g.drawImage(board,
+                                    2 + x * (4 + blockWidth), //bw+(2<<downscale)
+                                    2 + y * (4 + blockHeight), //bh+(2<<downscale)
+                                    null);
+                            sb.append("char id=").append(c)
+                                    .append(" x=").append(2 + x * (4 + blockWidth)) //bw+(2<<downscale)
+                                    .append(" y=").append(2 + y * (4 + blockHeight))
+                                    .append(" width=").append(blockWidth + 2) //bw+(2<<downscale)
+                                    .append(" height=").append(blockHeight)
+                                    .append(" xoffset=0 yOffset=-1 xadvance=").append(blockWidth + 2)
+                                    .append(" page=0 chnl=15\n");
+                            if(aliases.containsKey(c))
+                            {
+                                sb.append("char id=").append(aliases.get(c, c))
+                                        .append(" x=").append(2 + x * (4 + blockWidth)) //bw+(2<<downscale)
+                                        .append(" y=").append(2 + y * (4 + blockHeight))
+                                        .append(" width=").append(blockWidth + 2) //bw+(2<<downscale)
+                                        .append(" height=").append(blockHeight)
+                                        .append(" xoffset=0 yOffset=-1 xadvance=").append(blockWidth + 2)
+                                        .append(" page=0 chnl=15\n");
+                            }
+                        }
+                        else {
+                            --x;
+                        }
+                    }
+                }
+                if (idx < allChars.length())
+                    System.out.println("Too many chars?");
+                ImageIO.write(image, "PNG", new File(fonts[4] + "-msdf.png"));
+                Gdx.files.local(fonts[4] + "-msdf.fnt").writeString(sb.toString(), false);
+                sb.setLength(0);
+                Gdx.files.local(fonts[4] + "-contents-msdf.txt").writeString(String.valueOf(regularChars.toArray()), false);
+                System.out.println("Done!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
+
+    
     /**
+     * Note: this method doesn't handle spacing 100% correctly, and letters/punctuation won't line up.
      * If using this method, you must have installed node.js and npm, then run this command in Glamer's project root:
      * <br>
      * {@code npm install msdf-bmfont-xml}
      * <br>
      * This will make soimy's MSDF JSON BMFont generator available to Glamer to run, and then Glamer will convert the
-     * JSON BMFonts to .fnt files that libGDX can read. 
+     * JSON BMFonts to .fnt files that libGDX can read.
      */
     public void create_msdf_generator() {
         super.create();
