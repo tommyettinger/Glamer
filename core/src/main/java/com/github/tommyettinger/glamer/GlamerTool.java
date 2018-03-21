@@ -240,7 +240,7 @@ public class GlamerTool extends ApplicationAdapter {
                 };
                 command.set(2, fonts[0]);
                 allChars = Gdx.files.local("assets/Iosevka-Slab-contents.txt").readString();
-                int width = 170, height = 72, baseline = 56, idx = 0, c = 0;
+                int width = 170, height = 72, baseline = 54, idx = 0, c = 0;
                 
                 CharArray chars = new CharArray(1024), regularChars = new CharArray(1024);
                 IntIntMap aliases = new IntIntMap(512);
