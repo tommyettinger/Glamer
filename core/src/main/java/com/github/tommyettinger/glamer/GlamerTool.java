@@ -89,8 +89,8 @@ public class GlamerTool extends ApplicationAdapter {
 
     @Override
     public void create() {
-        create_msdf_family();
-        //create_msdf();
+        //create_msdf_family();
+        create_msdf();
         //createFamily();
         //createNormal();
     }
@@ -101,7 +101,7 @@ public class GlamerTool extends ApplicationAdapter {
         super.create();
         try {
             int mainSize = 2048,
-                    blockWidth = 20, blockHeight = 52;
+                    blockWidth = 28, blockHeight = 40;
             // change command[2] to filename
             // change command[3] to the decimal codepoint printed as a string, such as "33"
             String os = System.getProperty("os.name"), processed = "linux";
@@ -110,11 +110,11 @@ public class GlamerTool extends ApplicationAdapter {
             else if(os.contains("ac"))
                 processed = "darwin";
 
-            List<String> command = Arrays.asList(processed + "/msdfgen", "-font", "assets/DejaVuSansMono-Bold.ttf", "33", "-scale", "2", "-translate", "1.5", "7", "-size", "20", "52", "-o", "temp.png");
+            List<String> command = Arrays.asList(processed + "/msdfgen", "-font", "assets/DejaVuSansMono-Bold.ttf", "33", "-scale", "1", "-translate", "3", "8", "-size", "" + blockWidth, "" + blockHeight, "-o", "temp.png");
             //List<String> command = Arrays.asList("msdfgen.exe", "-font", "assets/DejaVuSansMono-Bold.ttf", "33", "-scale", "3.2", "-translate", "3.5", "7.5", "-size", "44", "92", "-o", "temp.png");
             String filename, baseName;
             //for (int nm = 0; nm < filenames.length; nm++) {
-            for (int nm = 4; nm < 12; nm++) {
+            for (int nm = 3; nm < 4; nm++) {
                 filename = filenames[nm];
                 baseName = baseNames[nm];
 //                if (nm == 4) {
@@ -127,8 +127,10 @@ public class GlamerTool extends ApplicationAdapter {
 //                    command.set(8, "5");
 //                }
                 command.set(2, filename);
-                allChars = Gdx.files.local("assets/Iosevka-Slab-contents.txt").readString();
-                int width = 85, height = 36, baseline = 56;
+                
+                allChars = Gdx.files.local("assets/DejaVuSansMono-contents.txt").readString();
+                //allChars = Gdx.files.local("assets/Iosevka-Slab-contents.txt").readString();
+                int width = mainSize / (blockWidth + 4), height = mainSize / (blockHeight + 4), baseline = 28;//56;
 
                 StringBuilder sb = new StringBuilder(0x10000);
                 sb.append("info face=\"").append(baseName).append("\" size=-").append(blockHeight)
@@ -159,14 +161,15 @@ public class GlamerTool extends ApplicationAdapter {
                         sb.append("char id=").append(c)
                                 .append(" x=").append(2 + x * (4 + blockWidth)) //bw+(2<<downscale)
                                 .append(" y=").append(2 + y * (4 + blockHeight))
-                                .append(" width=").append(blockWidth + 2) //bw+(2<<downscale)
+                                .append(" width=").append(blockWidth) //bw+(2<<downscale)
                                 .append(" height=").append(blockHeight)
-                                .append(" xoffset=0 yOffset=-1 xadvance=").append(blockWidth + 2)
+                                .append(" xoffset=0 yOffset=-1 xadvance=").append(blockWidth)
                                 .append(" page=0 chnl=15\n");
                     }
                 }
                 if (i < allChars.length())
                     System.out.println("Too many chars!");
+                System.out.println("Showed " + i + " chars out of " + allChars.length());
                 ImageIO.write(image, "PNG", new File(baseName + "-msdf.png"));
                 Gdx.files.local(baseName + "-msdf.fnt").writeString(sb.toString(), false);
                 sb.setLength(0);
