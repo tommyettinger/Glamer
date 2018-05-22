@@ -244,10 +244,10 @@ public class GlamerTool extends ApplicationAdapter {
                         Gdx.files.local(fonts[3]),
                 };
                 Font[] font = {
-                        Font.createFont(Font.TRUETYPE_FONT, fontFiles[0].file()).deriveFont(32f),
-                        Font.createFont(Font.TRUETYPE_FONT, fontFiles[1].file()).deriveFont(32f),
-                        Font.createFont(Font.TRUETYPE_FONT, fontFiles[2].file()).deriveFont(32f),
-                        Font.createFont(Font.TRUETYPE_FONT, fontFiles[3].file()).deriveFont(32f),
+                        Font.createFont(Font.TRUETYPE_FONT, fontFiles[0].file()).deriveFont(24f),
+                        Font.createFont(Font.TRUETYPE_FONT, fontFiles[1].file()).deriveFont(24f),
+                        Font.createFont(Font.TRUETYPE_FONT, fontFiles[2].file()).deriveFont(24f),
+                        Font.createFont(Font.TRUETYPE_FONT, fontFiles[3].file()).deriveFont(24f),
                 };
                 command.set(2, fonts[0]);
 //                allChars = Gdx.files.local("assets/Iosevka-Slab-contents.txt").readString();
@@ -300,15 +300,16 @@ public class GlamerTool extends ApplicationAdapter {
                                                 aliased.add((c | face << 14));
                                             }
                                         }
-                                        chars.add((char) (c | face << 14));
+                                        char ac = (char) (c | face << 14);
+                                        chars.add(ac);
                                         if(face == 0)
                                             regularChars.add((char)c);
-                                        tc[0] = (char) (c & 0x3fff);
-                                        gv2 = font[3].createGlyphVector(frc, tc);
-                                        if((c & 0x3fff) == 32)
-                                            widths.put(c, 7);
+                                        tc[0] = (char) (c);
+                                        gv2 = font[face].createGlyphVector(frc, tc);
+                                        if(c == 32)
+                                            widths.put(ac, 7);
                                         else
-                                            widths.put(c, (int)Math.ceil(gv2.getVisualBounds().getWidth()));
+                                            widths.put(ac, (int)Math.ceil(gv2.getVisualBounds().getWidth()));
                             }
                         }
                     }
@@ -385,23 +386,24 @@ public class GlamerTool extends ApplicationAdapter {
                                     null);
                             usedXs.put(c, 2 + x * (4 + blockWidth));
                             usedYs.put(c, 2 + y * (4 + blockHeight));
-                            int w = widths.get(c, -4);
                             sb.append("char id=").append(c)
                                     .append(" x=").append(2 + x * (4 + blockWidth)) //bw+(2<<downscale)
                                     .append(" y=").append(2 + y * (4 + blockHeight))
                                     .append(" width=").append(blockWidth + 2) //bw+(2<<downscale)
                                     .append(" height=").append(blockHeight)
-                                    .append(" xoffset=0 yOffset=-1 xadvance=").append(w + 2)
+                                    .append(" xoffset=0 yOffset=-1 xadvance=").append(widths.get(c, -4) + 2)
                                     .append(" page=0 chnl=15\n");
                             if(aliases.containsKey(c))
                             {
-                                int cs = aliases.get(c, c);
-                                sb.append("char id=").append(cs)
-                                        .append(" x=").append(usedXs.get(cs, 2)) //bw+(2<<downscale)
-                                        .append(" y=").append(usedYs.get(cs, 2))
+                                sb.append("char id=").append(aliases.get(c, c))
+                                        .append(" x=").append(2 + x * (4 + blockWidth)) //bw+(2<<downscale)
+                                        .append(" y=").append(2 + y * (4 + blockHeight))
+//                                        .append(" x=").append(usedXs.get(cs, 2)) //bw+(2<<downscale)
+//                                        .append(" y=").append(usedYs.get(cs, 2))
                                         .append(" width=").append(blockWidth + 2) //bw+(2<<downscale)
                                         .append(" height=").append(blockHeight)
-                                        .append(" xoffset=0 yOffset=-1 xadvance=").append(w + 2)
+                                        .append(" xoffset=0 yOffset=-1 xadvance=").append(
+                                                widths.get(aliases.get(c, c), -4) + 2)
                                         .append(" page=0 chnl=15\n");
                             }
                         }
