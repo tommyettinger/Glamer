@@ -89,8 +89,8 @@ public class GlamerTool extends ApplicationAdapter {
 
     @Override
     public void create() {
-        create_msdf_family();
-        //create_msdf();
+        //create_msdf_family();
+        create_msdf();
         //createFamily();
         //createNormal();
     }
@@ -101,7 +101,7 @@ public class GlamerTool extends ApplicationAdapter {
         super.create();
         try {
             int mainSize = 2048,
-                    blockWidth = 28, blockHeight = 40;
+                    blockWidth = 192, blockHeight = 192;
             // change command[2] to filename
             // change command[3] to the decimal codepoint printed as a string, such as "33"
             String os = System.getProperty("os.name"), processed = "linux";
@@ -110,13 +110,16 @@ public class GlamerTool extends ApplicationAdapter {
             else if(os.contains("ac"))
                 processed = "darwin";
 
-            List<String> command = Arrays.asList(processed + "/msdfgen", "-font", "assets/DejaVuSansMono-Bold.ttf", "33", "-scale", "1", "-translate", "3", "8", "-size", "" + blockWidth, "" + blockHeight, "-o", "temp.png");
+            List<String> command = Arrays.asList(processed + "/msdfgen", "-font", "assets/DejaVuSansMono-Bold.ttf", "32", "-scale", "6", "-translate", "1", "1", "-size", "" + blockWidth, "" + blockHeight, "-o", "temp.png");
             //List<String> command = Arrays.asList("msdfgen.exe", "-font", "assets/DejaVuSansMono-Bold.ttf", "33", "-scale", "3.2", "-translate", "3.5", "7.5", "-size", "44", "92", "-o", "temp.png");
             String filename, baseName;
             //for (int nm = 0; nm < filenames.length; nm++) {
             for (int nm = 3; nm < 4; nm++) {
-                filename = filenames[nm];
-                baseName = baseNames[nm];
+                filename = "assets/square.ttf";
+                baseName = "square";
+//                filename = filenames[nm];
+//                baseName = baseNames[nm];
+                
 //                if (nm == 4) {
 //                    command.set(5, "3.2");
 //                    command.set(7, "3.5");
@@ -128,19 +131,19 @@ public class GlamerTool extends ApplicationAdapter {
 //                }
                 command.set(2, filename);
                 
-                allChars = Gdx.files.local("assets/DejaVuSansMono-contents.txt").readString();
+                allChars = Gdx.files.local("assets/square-contents.txt").readString();
                 //allChars = Gdx.files.local("assets/Iosevka-Slab-contents.txt").readString();
-                int width = mainSize / (blockWidth + 4), height = mainSize / (blockHeight + 4), baseline = 28;//56;
+                int width = mainSize / (blockWidth + 4), height = mainSize / (blockHeight + 4), baseline = 96;//56;
 
                 StringBuilder sb = new StringBuilder(0x10000);
                 sb.append("info face=\"").append(baseName).append("\" size=-").append(blockHeight)
                         .append(" bold=0 italic=0 charset=\"\" unicode=1 stretchH=100 smooth=0 aa=1 padding=0,0,0,0 spacing=0,0 outline=0\n");
-                sb.append("common lineHeight=").append(42) // very tricky to get right
+                sb.append("common lineHeight=").append(96) // very tricky to get right
                         .append(" base=").append(baseline)
                         .append(" scaleW=2048 scaleH=2048 pages=1 packed=0 alphaChnl=0 redChnl=1 greenChnl=2 blueChnl=4\n");
                 sb.append("page id=0 file=\"").append(baseName).append("-msdf.png\"\n");
                 sb.append("chars count=").append(allChars.length()).append('\n');
-                BufferedImage image = new BufferedImage(mainSize, mainSize, BufferedImage.TYPE_4BYTE_ABGR),
+                BufferedImage image = new BufferedImage(mainSize, mainSize, BufferedImage.TYPE_3BYTE_BGR),
                         board;
                 Graphics2D g = image.createGraphics();
                 g.clearRect(0, 0, mainSize, mainSize);
@@ -164,7 +167,7 @@ public class GlamerTool extends ApplicationAdapter {
                                 .append(" width=").append(blockWidth) //bw+(2<<downscale)
                                 .append(" height=").append(blockHeight)
                                 .append(" xoffset=0 yOffset=-1 xadvance=").append(blockWidth)
-                                .append(" page=0 chnl=15\n");
+                                .append(" page=0 chnl=7\n");
                     }
                 }
                 if (i < allChars.length())
@@ -996,10 +999,13 @@ public class GlamerTool extends ApplicationAdapter {
     public void createNormal() {
         super.create();
         ObjectFloatMap<String> mapping = new ObjectFloatMap<>(16);
-//        mapping.put("assets/NotoSerif-Bold.ttf", 2.55f);
-//        mapping.put("assets/NotoSerif-BoldItalic.ttf", 2.55f);
-//        mapping.put("assets/NotoSerif-Italic.ttf", 2.55f);
+        mapping.put("assets/square.ttf", 2.55f);
+        /*
+        mapping.put("assets/NotoSerif-Bold.ttf", 2.55f);
+        mapping.put("assets/NotoSerif-BoldItalic.ttf", 2.55f);
+        mapping.put("assets/NotoSerif-Italic.ttf", 2.55f);
         mapping.put("assets/NotoSerif-Regular.ttf", 2.55f);
+        */
         /*
         mapping.put("assets/Iosevka_Full/Iosevka-Bold.ttf", 2.55f);
         mapping.put("assets/Iosevka_Full/Iosevka-BoldOblique.ttf", 2.55f);
