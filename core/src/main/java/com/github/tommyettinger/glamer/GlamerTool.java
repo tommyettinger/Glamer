@@ -101,7 +101,7 @@ public class GlamerTool extends ApplicationAdapter {
         super.create();
         try {
             int mainSize = 2048,
-                    blockWidth = 192, blockHeight = 192;
+                    blockWidth = 64, blockHeight = 64;
             // change command[2] to filename
             // change command[3] to the decimal codepoint printed as a string, such as "33"
             String os = System.getProperty("os.name"), processed = "linux";
@@ -110,13 +110,13 @@ public class GlamerTool extends ApplicationAdapter {
             else if(os.contains("ac"))
                 processed = "darwin";
 
-            List<String> command = Arrays.asList(processed + "/msdfgen", "-font", "assets/DejaVuSansMono-Bold.ttf", "32", "-scale", "6", "-translate", "1", "1", "-size", "" + blockWidth, "" + blockHeight, "-o", "temp.png");
+            List<String> command = Arrays.asList(processed + "/msdfgen", "-font", "assets/DejaVuSansMono-Bold.ttf", "32", "-scale", "5", "-translate", "2", "3", "-size", "" + blockWidth, "" + blockHeight, "-o", "temp.png");
             //List<String> command = Arrays.asList("msdfgen.exe", "-font", "assets/DejaVuSansMono-Bold.ttf", "33", "-scale", "3.2", "-translate", "3.5", "7.5", "-size", "44", "92", "-o", "temp.png");
             String filename, baseName;
             //for (int nm = 0; nm < filenames.length; nm++) {
             for (int nm = 3; nm < 4; nm++) {
-                filename = "assets/square.ttf";
-                baseName = "square";
+                filename = "assets/awesome-solid.ttf";
+                baseName = "awesome-solid";
 //                filename = filenames[nm];
 //                baseName = baseNames[nm];
                 
@@ -131,7 +131,7 @@ public class GlamerTool extends ApplicationAdapter {
 //                }
                 command.set(2, filename);
                 
-                allChars = Gdx.files.local("assets/square-contents.txt").readString();
+                allChars = Gdx.files.local("assets/awesome-solid-contents.txt").readString();
                 //allChars = Gdx.files.local("assets/Iosevka-Slab-contents.txt").readString();
                 int width = mainSize / (blockWidth + 4), height = mainSize / (blockHeight + 4), baseline = 96;//56;
 
@@ -999,7 +999,8 @@ public class GlamerTool extends ApplicationAdapter {
     public void createNormal() {
         super.create();
         ObjectFloatMap<String> mapping = new ObjectFloatMap<>(16);
-        mapping.put("assets/square.ttf", 2.55f);
+        mapping.put("assets/awesome-solid.ttf", 2f);
+        //mapping.put("assets/square.ttf", 2.55f);
         /*
         mapping.put("assets/NotoSerif-Bold.ttf", 2.55f);
         mapping.put("assets/NotoSerif-BoldItalic.ttf", 2.55f);
@@ -1113,7 +1114,12 @@ public class GlamerTool extends ApplicationAdapter {
                     tc[0] = 'X';
                     gv2 = font.createGlyphVector(frc, tc);
                     if (gv2.getGlyphCode(0) == missing)
-                        throw new IllegalArgumentException("Font is missing both 'x' and 'X'; at least one is needed to judge metrics.");
+                    {
+                        tc[0] = '\uf549';
+                        gv2 = font.createGlyphVector(frc, tc);
+                        if(gv2.getGlyphCode(0) == missing) 
+                            throw new IllegalArgumentException("Font is missing both 'x' and 'X'; at least one is needed to judge metrics.");
+                    }
                     xBounds = gv2.getVisualBounds();
                 } else {
                     xBounds = gv2.getVisualBounds();
