@@ -4,6 +4,13 @@ sourceCompatibility = 1.8
 mainClassName = 'com.github.tommyettinger.glamer.headless.HeadlessLauncher'
 eclipse.project.name = appName + '-headless'
 
+run {
+  main = project.mainClassName
+  classpath = sourceSets.main.runtimeClasspath
+  workingDir = "../"
+  setIgnoreExitValue(true)
+}
+
 dependencies {
   compile project(':core')
   compile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
