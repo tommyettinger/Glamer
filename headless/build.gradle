@@ -1,7 +1,9 @@
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
 apply plugin: 'application'
 
 sourceCompatibility = 1.8
-mainClassName = 'com.github.tommyettinger.glamer.headless.HeadlessLauncher'
+mainClassName = 'com.github.tommyettinger.glamer.GlamerTool'
 eclipse.project.name = appName + '-headless'
 
 run {
@@ -12,8 +14,17 @@ run {
 }
 
 dependencies {
-  compile project(':core')
   compile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
   compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
   compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
+  compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+  compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
+}
+
+jar {
+  archiveName "GlamerTool.jar"
+  from { configurations.compile.collect { zipTree(it) } }
+  manifest {
+    attributes 'Main-Class': project.mainClassName
+  }
 }

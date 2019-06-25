@@ -1,7 +1,10 @@
 package com.github.tommyettinger.glamer;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.headless.HeadlessApplication;
+import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tools.distancefield.DistanceFieldGenerator;
@@ -25,14 +28,44 @@ import java.util.List;
  * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms.
  */
 public class GlamerTool extends ApplicationAdapter {
-    String[] args;
-
     public GlamerTool() {
         this(new String[0]);
     }
 
-    public GlamerTool(String[] params) {
-        args = (params == null) ? new String[0] : params;
+    public GlamerTool(String[] args) {
+        switch (args.length)
+        {
+            case 9: baseline = Integer.parseInt(args[8]);
+            case 8: params[9] = args[7];
+            case 7: params[8] = args[6];
+            case 6: params[12] = args[5];
+            case 5: params[11] = args[4];
+            case 4: params[6] = args[3];
+            case 3: params[1] = args[2];
+            case 2: params[4] = args[1];
+            case 1: params[3] = args[0];
+            break;
+            default:
+                System.out.println("GlamerTool takes arguments in this form (only the font path is required):");
+                System.out.println("java -jar GlamerTool.jar path/to/font.ttf size mode scale sizeX sizeY translateX translateY baseline");
+                System.out.println("Attempting to run anyway on Iosevka.ttf...");
+
+        }
+    }
+    
+    public static void main(String[] args) {
+        createApplication(args);
+    }
+
+    private static Application createApplication(String[] args) {
+        // Note: you can use a custom ApplicationListener implementation for the headless project instead of GlamerTool.
+        return new HeadlessApplication(new GlamerTool(args), getDefaultConfiguration());
+    }
+
+    private static HeadlessApplicationConfiguration getDefaultConfiguration() {
+        HeadlessApplicationConfiguration configuration = new HeadlessApplicationConfiguration();
+        configuration.renderInterval = -1f; // When this value is negative, GlamerTool#render() is never called.
+        return configuration;
     }
 
     private String[] filenames = {
@@ -111,7 +144,7 @@ public class GlamerTool extends ApplicationAdapter {
         super.create();
         try {
             int mainSize = 2048,
-                    blockWidth = 23, blockHeight = 54;
+                    blockWidth = 23, blockHeight = 50;
             // change command[2] to filename
             // change command[3] to the decimal codepoint printed as a string, such as "33"
             String os = System.getProperty("os.name"), processed = "linux";
@@ -126,8 +159,8 @@ public class GlamerTool extends ApplicationAdapter {
             //for (int nm = 0; nm < filenames.length; nm++) {
             for (int nm = 3; nm < 4; nm++) {
                 filename = params[3];
-                baseName = filename.substring(Math.max(0, Math.max(filename.lastIndexOf('/'), 
-                        filename.lastIndexOf('\\'))), filename.lastIndexOf('.'));
+                baseName = filename.substring(Math.max(filename.lastIndexOf('/'), 
+                        filename.lastIndexOf('\\')) + 1, filename.lastIndexOf('.'));
 //                filename = filenames[nm];
 //                baseName = baseNames[nm];
                 
@@ -1202,8 +1235,7 @@ public class GlamerTool extends ApplicationAdapter {
             for (ObjectFloatMap.Entry<String> entry : mapping) {
                 float fontSize = entry.value;
 
-                FileHandle fontFile = (args.length >= 1 && args[0] != null) ? Gdx.files.local(args[0]) : Gdx.files.local(
-                        entry.key
+                FileHandle fontFile = Gdx.files.local(params[3]);
                         // "assets/BoxedIn.ttf" // 12f
                         // "assets/Iosevka-Slab.ttf" // 5.4f
                         // "assets/Iosevka-Wide-Slab-Light.ttf" 5.25f
@@ -1219,9 +1251,8 @@ public class GlamerTool extends ApplicationAdapter {
                         // "assets/SourceCodePro-Medium.otf" // fontSize 6.5f
                         // "assets/DejaVuSansMono.ttf" // fontSize 4.75f
                         // "assets/Galaxsea-Starlight-Mono-v3_1.ttf" // fontSize 12f
-                );
-                Font font = Font.createFont(Font.TRUETYPE_FONT, fontFile.file()).deriveFont((args.length >= 2 && args[1] != null) ?
-                        Float.parseFloat(args[1]) : 64f * fontSize);
+                //);
+                Font font = Font.createFont(Font.TRUETYPE_FONT, fontFile.file()).deriveFont(Float.parseFloat(params[4]));
                 BufferedImage tImage = new BufferedImage(512, 512, BufferedImage.TYPE_4BYTE_ABGR);
                 Graphics2D tGraphics = tImage.createGraphics();
                 tGraphics.setFont(font);
