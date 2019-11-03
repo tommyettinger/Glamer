@@ -186,7 +186,7 @@ public class GlamerTool extends ApplicationAdapter {
 //                command.set(9, "5");    // translate y
 //                command.set(3, filename);
                 Font font = Font.createFont(Font.TRUETYPE_FONT, (Gdx.files.internal(filename).exists()
-                        ? Gdx.files.internal(filename) : Gdx.files.local(filename)).file()).deriveFont(80f);
+                        ? Gdx.files.internal(filename) : Gdx.files.local(filename)).file()).deriveFont(24f);
 //                allChars = Gdx.files.local("assets/bloccus/bloccus-contents.txt").readString("UTF8");
                 
                 //allChars = Gdx.files.local("assets/Iosevka-Slab-contents.txt").readString("UTF-8");
@@ -299,7 +299,7 @@ public class GlamerTool extends ApplicationAdapter {
                                 .append(" y=").append(2 + y * (4 + blockHeight))
                                 .append(" width=").append(blockWidth + 2) //bw+(2<<downscale)
                                 .append(" height=").append(blockHeight)
-                                .append(" xoffset=0 yOffset=-1 xadvance=").append(widths.get(c, -4) + 2)
+                                .append(" xoffset=0 yOffset=-1 xadvance=").append(widths.get(c, -4) + 4)
                                 .append(" page=0 chnl=15\n");
 
                     }
