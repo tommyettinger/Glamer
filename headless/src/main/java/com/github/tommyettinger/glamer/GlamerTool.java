@@ -52,6 +52,13 @@ public class GlamerTool extends ApplicationAdapter {
 
         }
     }
+    /*
+    Sample command lines:
+    Roboto-Regular.ttf:
+    java -jar GlamerTool.jar assets/Roboto-Regular.ttf 32 msdf 1 40 45 4 9 38
+    Roboto-Bold.ttf:
+    java -jar GlamerTool.jar assets/Roboto-Bold.ttf 32 msdf 1 40 45 4 9 38
+     */
     
     public static void main(String[] args) {
         createApplication(args);
@@ -123,7 +130,7 @@ public class GlamerTool extends ApplicationAdapter {
     private static String[] params = {
             "./msdfgen", //0
             "msdf",      //1
-            "-font", "assets/Iosevka.ttf", "32", //2 3 4
+            "-font", "Iosevka.ttf", "32", //2 3 4
             "-scale", "2.5", //5 6
             "-translate", "1", "5", //7 8 9
             "-size", "23", "54", //10 11 12
@@ -144,7 +151,7 @@ public class GlamerTool extends ApplicationAdapter {
         super.create();
         try {
             int mainSize = 2048,
-                    blockWidth = 23, blockHeight = 50;
+                    blockWidth = Integer.parseInt(params[11]), blockHeight = Integer.parseInt(params[12]) - 4;
             // change command[2] to filename
             // change command[3] to the decimal codepoint printed as a string, such as "33"
             String os = System.getProperty("os.name"), processed = "linux";
@@ -178,7 +185,8 @@ public class GlamerTool extends ApplicationAdapter {
 //                command.set(8, "1");    // translate x
 //                command.set(9, "5");    // translate y
 //                command.set(3, filename);
-                Font font = Font.createFont(Font.TRUETYPE_FONT, Gdx.files.local(filename).file()).deriveFont(80f);
+                Font font = Font.createFont(Font.TRUETYPE_FONT, (Gdx.files.internal(filename).exists()
+                        ? Gdx.files.internal(filename) : Gdx.files.local(filename)).file()).deriveFont(80f);
 //                allChars = Gdx.files.local("assets/bloccus/bloccus-contents.txt").readString("UTF8");
                 
                 //allChars = Gdx.files.local("assets/Iosevka-Slab-contents.txt").readString("UTF-8");
@@ -188,57 +196,55 @@ public class GlamerTool extends ApplicationAdapter {
                         shown.add((char) i);
                 }
                 allChars = new String(shown.items, 0, shown.size);
-//                int width = (mainSize - 4) / (blockWidth + 4), height = (mainSize - 4) / (blockHeight + 4),
-//                        baseline = 48, idx = 0, c, limit = allChars.length() - 1;
-//
-//                CharArray chars = new CharArray(1024), regularChars = new CharArray(1024);
-//                IntIntMap 
-//                        widths = new IntIntMap(limit + 2 << 2),
-//                        usedXs = new IntIntMap(limit + 2),
-//                        usedYs = new IntIntMap(limit + 2);
-//                BufferedImage tImage = new BufferedImage(256, 256, BufferedImage.TYPE_4BYTE_ABGR);
-//                Graphics2D tGraphics = tImage.createGraphics();
-//                tGraphics.setFont(font);
-//                FontRenderContext frc = tGraphics.getFontRenderContext();
-//                char[] tc = new char[]{'X'};
-//                GlyphVector gv2;
-//
-//                chars.add((char) 0);
-//                    regularChars.add((char) 0);
-//                    idx = 0;
-//                    c = allChars.charAt(idx);
-//                    while (c < 0xFFFF && idx < allChars.length()) {
-//                        c = allChars.charAt(idx++);
-//                        if (Character.isDefined(c)) {
-//                            switch (Character.getDirectionality(c)) {
-//                                case Character.DIRECTIONALITY_WHITESPACE:
-//                                    if (c != 32)
-//                                        break;
-//                                case Character.DIRECTIONALITY_LEFT_TO_RIGHT:
-//                                case Character.DIRECTIONALITY_EUROPEAN_NUMBER:
-//                                case Character.DIRECTIONALITY_EUROPEAN_NUMBER_SEPARATOR:
-//                                case Character.DIRECTIONALITY_EUROPEAN_NUMBER_TERMINATOR:
-//                                case Character.DIRECTIONALITY_COMMON_NUMBER_SEPARATOR:
-//                                case Character.DIRECTIONALITY_OTHER_NEUTRALS:
-//                                case Character.DIRECTIONALITY_UNDEFINED:
-//                                case Character.DIRECTIONALITY_SEGMENT_SEPARATOR:
-//                                    char ac = (char) c;
-//                                    if (Character.isSurrogate(ac))
-//                                        continue;
-//                                    chars.add(ac);                                     
-//                                    regularChars.add((char) c);
-//                                    tc[0] = (char) (c);
-//                                    gv2 = font.createGlyphVector(frc, tc);
-////                                    if (c == 32)
-////                                        widths.put(ac, 7);
-////                                    else
-////                                        widths.put(ac, (int) Math.ceil(gv2.getVisualBounds().getWidth()));
-//                            }
-//                        }
-//                    }
+                int width = mainSize / (blockWidth + 4), height = mainSize / (blockHeight + 4),
+                        baseline = 48, idx = 0, c, limit = allChars.length() - 1;
 
-                int width = mainSize / (blockWidth + 4), height = mainSize / (blockHeight + 4);
+                CharArray chars = new CharArray(1024), regularChars = new CharArray(1024);
+                IntIntMap 
+                        widths = new IntIntMap(limit + 2 << 2),
+                        usedXs = new IntIntMap(limit + 2),
+                        usedYs = new IntIntMap(limit + 2);
+                BufferedImage tImage = new BufferedImage(256, 256, BufferedImage.TYPE_4BYTE_ABGR);
+                Graphics2D tGraphics = tImage.createGraphics();
+                tGraphics.setFont(font);
+                FontRenderContext frc = tGraphics.getFontRenderContext();
+                char[] tc = new char[]{'X'};
+                GlyphVector gv2;
 
+                chars.add((char) 0);
+                    regularChars.add((char) 0);
+                    idx = 0;
+                    c = allChars.charAt(idx);
+                    while (c < 0xFFFF && idx < allChars.length()) {
+                        c = allChars.charAt(idx++);
+                        if (Character.isDefined(c)) {
+                            switch (Character.getDirectionality(c)) {
+                                case Character.DIRECTIONALITY_WHITESPACE:
+                                    if (c != 32)
+                                        break;
+                                case Character.DIRECTIONALITY_LEFT_TO_RIGHT:
+                                case Character.DIRECTIONALITY_EUROPEAN_NUMBER:
+                                case Character.DIRECTIONALITY_EUROPEAN_NUMBER_SEPARATOR:
+                                case Character.DIRECTIONALITY_EUROPEAN_NUMBER_TERMINATOR:
+                                case Character.DIRECTIONALITY_COMMON_NUMBER_SEPARATOR:
+                                case Character.DIRECTIONALITY_OTHER_NEUTRALS:
+                                case Character.DIRECTIONALITY_UNDEFINED:
+                                case Character.DIRECTIONALITY_SEGMENT_SEPARATOR:
+                                    char ac = (char) c;
+                                    if (Character.isSurrogate(ac))
+                                        continue;
+                                    chars.add(ac);                                     
+                                    regularChars.add((char) c);
+                                    tc[0] = (char) (c);
+                                    gv2 = font.createGlyphVector(frc, tc);
+                                    if (c == 32)
+                                        widths.put(ac, 7);
+                                    else
+                                        widths.put(ac, (int) Math.ceil(gv2.getVisualBounds().getWidth()));
+                            }
+                        }
+                    }
+                    
                 StringBuilder sb = new StringBuilder(0x10000);
                 sb.append("info face=\"").append(baseName).append("\" size=-").append(blockHeight)
                         .append(" bold=0 italic=0 charset=\"\" unicode=1 stretchH=100 smooth=0 aa=1 padding=1,1,1,1 spacing=0,0 outline=0\n");
@@ -255,87 +261,88 @@ public class GlamerTool extends ApplicationAdapter {
                 g.setColor(clear);
                 g.fillRect(0, 0, mainSize, mainSize);
                 int i = -1, max = allChars.length();
-                int c;
                 ProcessBuilder proc = new ProcessBuilder(command);
-
-//                for (int y = 0; y < height && i < max; y++) {
-//                    for (int x = 0; x < width && i < max; x++) {
-//                        if(i == 0)
-//                        {
-//                            g.setColor(Color.white);
-//                            g.fillRect(2, 2, blockWidth, blockHeight);
-//                            usedXs.put(c, 2);
-//                            usedYs.put(c, 2);
-//                            //gb.drawString(String.valueOf(c), x * bw + 8, (y+1) * bh + 8);
-//                            sb.append("char id=").append(c)
-//                                    .append(" x=").append(2) //bw+(2<<downscale)
-//                                    .append(" y=").append(2) //bh+(2<<downscale)
-//                                    .append(" width=").append(blockWidth + 2) //bw+(2<<downscale)
-//                                    .append(" height=").append(blockHeight)
-//                                    .append(" xoffset=0 yOffset=-1 xadvance=").append(blockWidth + 2)
-//                                    .append(" page=0 chnl=15\n");
-//                            x++;
-//                        }
-//                        c = allChars.charAt(i++);
-//                        command.set(4, String.valueOf(c));
-//                        proc.start().waitFor();
-//                        board = ImageIO.read(new File("temp.png"));
-//                        g.drawImage(board,
-//                                2 + x * (4 + blockWidth), //bw+(2<<downscale)
-//                                2 + y * (4 + blockHeight), //bh+(2<<downscale)
-//                                null);
-//
-//                        usedXs.put(c, 2 + x * (4 + blockWidth));
-//                        usedYs.put(c, 2 + y * (4 + blockHeight));
-//                        sb.append("char id=").append(c)
-//                                .append(" x=").append(2 + x * (4 + blockWidth)) //bw+(2<<downscale)
-//                                .append(" y=").append(2 + y * (4 + blockHeight))
-//                                .append(" width=").append(blockWidth + 2) //bw+(2<<downscale)
-//                                .append(" height=").append(blockHeight)
-//                                .append(" xoffset=0 yOffset=-1 xadvance=").append(widths.get(c, -4) + 2)
-//                                .append(" page=0 chnl=15\n");
-//
-//                    }
-//                }
 
                 for (int y = 0; y < height && i < max; y++) {
                     for (int x = 0; x < width && i < max; x++) {
-                        if (i == -1) {
+                        if(i == -1)
+                        {
                             i++;
                             c = 0;
                             g.setColor(Color.white);
-                            g.fillRect(
-                                    2 + x * (4 + blockWidth), //bw+(2<<downscale)
-                                    2 + y * (4 + blockHeight), //bh+(2<<downscale)
-                                    blockWidth, blockHeight
-                            );
-                            sb.append("char id=").append(c)
-                                    .append(" x=").append(2 + x * (4 + blockWidth)) //bw+(2<<downscale)
-                                    .append(" y=").append(2 + y * (4 + blockHeight))
-                                    .append(" width=").append(blockWidth) //bw+(2<<downscale)
-                                    .append(" height=").append(blockHeight)
-                                    .append(" xoffset=0 yOffset=-1 xadvance=").append(blockWidth)
-                                    .append(" page=0 chnl=15\n");
-                        } else {
-                            c = allChars.charAt(i++);
-                            command.set(4, String.valueOf(c));
-                            proc.start().waitFor();
-                            board = ImageIO.read(new File("temp.png"));
-                            g.drawImage(board,
-                                    2 + x * (4 + blockWidth), //bw+(2<<downscale)
-                                    2 + y * (4 + blockHeight), //bh+(2<<downscale)
-                                    null);
+                            g.fillRect(2, 2, blockWidth, blockHeight);
+                            usedXs.put(c, 2);
+                            usedYs.put(c, 2);
                             //gb.drawString(String.valueOf(c), x * bw + 8, (y+1) * bh + 8);
                             sb.append("char id=").append(c)
-                                    .append(" x=").append(2 + x * (4 + blockWidth)) //bw+(2<<downscale)
-                                    .append(" y=").append(2 + y * (4 + blockHeight))
-                                    .append(" width=").append(blockWidth) //bw+(2<<downscale)
+                                    .append(" x=").append(2) //bw+(2<<downscale)
+                                    .append(" y=").append(2) //bh+(2<<downscale)
+                                    .append(" width=").append(blockWidth + 2) //bw+(2<<downscale)
                                     .append(" height=").append(blockHeight)
-                                    .append(" xoffset=0 yOffset=-1 xadvance=").append(blockWidth)
+                                    .append(" xoffset=0 yOffset=-1 xadvance=").append(blockWidth + 2)
                                     .append(" page=0 chnl=15\n");
+                            x++;
                         }
+                        c = allChars.charAt(i++);
+                        command.set(4, String.valueOf(c));
+                        proc.start().waitFor();
+                        board = ImageIO.read(new File("temp.png"));
+                        g.drawImage(board,
+                                2 + x * (4 + blockWidth), //bw+(2<<downscale)
+                                2 + y * (4 + blockHeight), //bh+(2<<downscale)
+                                null);
+
+                        usedXs.put(c, 2 + x * (4 + blockWidth));
+                        usedYs.put(c, 2 + y * (4 + blockHeight));
+                        sb.append("char id=").append(c)
+                                .append(" x=").append(2 + x * (4 + blockWidth)) //bw+(2<<downscale)
+                                .append(" y=").append(2 + y * (4 + blockHeight))
+                                .append(" width=").append(blockWidth + 2) //bw+(2<<downscale)
+                                .append(" height=").append(blockHeight)
+                                .append(" xoffset=0 yOffset=-1 xadvance=").append(widths.get(c, -4) + 2)
+                                .append(" page=0 chnl=15\n");
+
                     }
                 }
+////used for monospace fonts
+//                for (int y = 0; y < height && i < max; y++) {
+//                    for (int x = 0; x < width && i < max; x++) {
+//                        if (i == -1) {
+//                            i++;
+//                            c = 0;
+//                            g.setColor(Color.white);
+//                            g.fillRect(
+//                                    2 + x * (4 + blockWidth), //bw+(2<<downscale)
+//                                    2 + y * (4 + blockHeight), //bh+(2<<downscale)
+//                                    blockWidth, blockHeight
+//                            );
+//                            sb.append("char id=").append(c)
+//                                    .append(" x=").append(2 + x * (4 + blockWidth)) //bw+(2<<downscale)
+//                                    .append(" y=").append(2 + y * (4 + blockHeight))
+//                                    .append(" width=").append(blockWidth) //bw+(2<<downscale)
+//                                    .append(" height=").append(blockHeight)
+//                                    .append(" xoffset=0 yOffset=-1 xadvance=").append(blockWidth)
+//                                    .append(" page=0 chnl=15\n");
+//                        } else {
+//                            c = allChars.charAt(i++);
+//                            command.set(4, String.valueOf(c));
+//                            proc.start().waitFor();
+//                            board = ImageIO.read(new File("temp.png"));
+//                            g.drawImage(board,
+//                                    2 + x * (4 + blockWidth), //bw+(2<<downscale)
+//                                    2 + y * (4 + blockHeight), //bh+(2<<downscale)
+//                                    null);
+//                            //gb.drawString(String.valueOf(c), x * bw + 8, (y+1) * bh + 8);
+//                            sb.append("char id=").append(c)
+//                                    .append(" x=").append(2 + x * (4 + blockWidth)) //bw+(2<<downscale)
+//                                    .append(" y=").append(2 + y * (4 + blockHeight))
+//                                    .append(" width=").append(blockWidth) //bw+(2<<downscale)
+//                                    .append(" height=").append(blockHeight)
+//                                    .append(" xoffset=0 yOffset=-1 xadvance=").append(blockWidth)
+//                                    .append(" page=0 chnl=15\n");
+//                        }
+//                    }
+//                }
                 if (i + 1 < allChars.length())
                     System.out.println("Too many chars!");
                 System.out.println("Showed " + i + " chars out of " + allChars.length());
