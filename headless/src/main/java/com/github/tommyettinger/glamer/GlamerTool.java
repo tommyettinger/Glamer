@@ -35,6 +35,7 @@ public class GlamerTool extends ApplicationAdapter {
     public GlamerTool(String[] args) {
         switch (args.length)
         {
+            case 10: params[14] = args[9];
             case 9: baseline = Integer.parseInt(args[8]);
             case 8: params[9] = args[7];
             case 7: params[8] = args[6];
@@ -58,11 +59,11 @@ public class GlamerTool extends ApplicationAdapter {
              */
             default:
                 System.out.println("GlamerTool takes arguments in this form (only the font path is required):");
-                System.out.println("java -jar GlamerTool.jar path/to/font.ttf size mode scale sizeX sizeY translateX translateY baseline");
+                System.out.println("java -jar GlamerTool.jar path/to/font.ttf size mode scale sizeX sizeY translateX translateY baseline pxRange");
                 System.out.println("For example...");
-                System.out.println("java -jar GlamerTool.jar Iosevka.ttf 32 mono 2.5 23 54 1 5 57");
+                System.out.println("java -jar GlamerTool.jar Iosevka.ttf 32 mono 2.5 23 54 1 5 57 4");
                 System.out.println("Or...");
-                System.out.println("java -jar GlamerTool.jar Roboto-Regular.ttf 32 var 1 40 45 4 9 38");
+                System.out.println("java -jar GlamerTool.jar Roboto-Regular.ttf 32 var 1 40 45 4 9 38 4");
                 System.out.println("Attempting to run anyway on Iosevka.ttf...");
 
         }
@@ -145,7 +146,7 @@ public class GlamerTool extends ApplicationAdapter {
     private static String[] params = {
             "./msdfgen", //0
             "mono",      //1
-            "-font", "assets/Iosevka.ttf", "32", //2 3 4
+            "-font", "Iosevka.ttf", "32", //2 3 4
             "-scale", "2.5", //5 6
             "-translate", "1", "5", //7 8 9
             "-size", "23", "54", //10 11 12
@@ -169,7 +170,7 @@ public class GlamerTool extends ApplicationAdapter {
         super.create();
         try {
             int mainSize = 2048,
-                    blockWidth = Integer.parseInt(params[11]), blockHeight = Integer.parseInt(params[12]) - 4;
+                    blockWidth = Integer.parseInt(params[11]), blockHeight = Integer.parseInt(params[12]);
             // change command[2] to filename
             // change command[3] to the decimal codepoint printed as a string, such as "33"
             String os = System.getProperty("os.name"), processed = "linux";
