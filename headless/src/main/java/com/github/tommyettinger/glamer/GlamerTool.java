@@ -268,7 +268,7 @@ public class GlamerTool extends ApplicationAdapter {
                 sb.append("info face=\"").append(baseName).append("\" size=-").append(blockHeight)
                         .append(" bold=0 italic=0 charset=\"\" unicode=1 stretchH=100 smooth=0 aa=1 padding=1,1,1,1 spacing=0,0 outline=0\n");
                 sb.append("common lineHeight=").append(blockHeight) // very tricky to get right
-                        .append(" base=").append(baseline)  // 56 or 57 ?
+                        .append(" base=").append(baseline)
                         .append(" scaleW=2048 scaleH=2048 pages=1 packed=0 alphaChnl=0 redChnl=4 greenChnl=4 blueChnl=4\n");
                 sb.append("page id=0 file=\"").append(baseName).append("-msdf.png\"\n");
                 sb.append("chars count=").append(allChars.length()+1).append('\n');
