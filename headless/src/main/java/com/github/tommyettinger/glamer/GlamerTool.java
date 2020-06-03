@@ -331,8 +331,7 @@ public class GlamerTool extends ApplicationAdapter {
                             c = 0;
                             g.setColor(Color.white);
                             g.fillRect(
-                                    2 + x * (4 + blockWidth), //bw+(2<<downscale)
-                                    2 + y * (4 + blockHeight), //bh+(2<<downscale)
+                                    2 + x * (4 + blockWidth), 2 + y * (4 + blockHeight),
                                     blockWidth, blockHeight
                             );
                             sb.append("char id=").append(c)
