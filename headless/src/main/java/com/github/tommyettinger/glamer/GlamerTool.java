@@ -209,7 +209,7 @@ public class GlamerTool extends ApplicationAdapter {
                 
                 //allChars = Gdx.files.local("assets/Iosevka-Slab-contents.txt").readString("UTF-8");
                 CharArray shown = new CharArray(font.getNumGlyphs());
-                for (int i = 0; i < 65536; i++) {
+                for (int i = 1; i < 65536; i++) {
                     if(font.canDisplay(i))
                         shown.add((char) i);
                 }
