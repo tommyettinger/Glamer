@@ -156,12 +156,12 @@ public class GlamerTool extends ApplicationAdapter {
     @Override
     public void create() {
         //create_msdf_family();
-        if(params[1].contains("mono") || params[1].contains("fixed")) 
-            create_msdf("msdf");
-        else
-            create_msdf_variable("msdf");
+//        if(params[1].contains("mono") || params[1].contains("fixed")) 
+//            create_msdf("msdf");
+//        else
+//            create_msdf_variable("msdf");
         //createFamily();
-        //createNormal();
+        createNormal();
     }
 
     // "msdfgen.exe -font " + filename + " " + codepoint + " -scale 2.5 -translate 2 4.5 -size 32 64 -o " + codepoint + ".png"
@@ -1400,7 +1400,7 @@ public class GlamerTool extends ApplicationAdapter {
 
     }
 
-    public void createNormal() {
+    public void createDistanceField() {
         super.create();
         ObjectFloatMap<String> mapping = new ObjectFloatMap<>(16);
         mapping.put("assets/awesome-solid.ttf", 2f);
@@ -1471,25 +1471,24 @@ public class GlamerTool extends ApplicationAdapter {
         try {
             int downscale = 2, mainSize = 4096, bigSize = mainSize << downscale;
             for (ObjectFloatMap.Entry<String> entry : mapping) {
-                float fontSize = entry.value;
-
-                FileHandle fontFile = Gdx.files.local(params[3]);
-                        // "assets/BoxedIn.ttf" // 12f
-                        // "assets/Iosevka-Slab.ttf" // 5.4f
-                        // "assets/Iosevka-Wide-Slab-Light.ttf" 5.25f
-                        // "assets/Iosevka.ttf" 5.5f
-                        // "assets/Iosevka-Light.ttf" 5.5f
-                        // "assets/Iosevka-Slab-Light.ttf" 5.4f
-                        // "assets/Iosevka-Slab-Thin.ttf" 5.4f
-                        // "assets/Iosevka-Wide.ttf" 5.25f
-                        // "assets/Iosevka-Wide-Slab.ttf" 5.25f (too high?)
-                        // "assets/Iosevka-Wide-Light.ttf" 5.25f
-                        // "assets/Iosevka-Wide-Slab-Light.ttf" 5.25f
-                        // "assets/Galaxsea-Starlight-Mono-v3_1.ttf" 12f
-                        // "assets/SourceCodePro-Medium.otf" // fontSize 6.5f
-                        // "assets/DejaVuSansMono.ttf" // fontSize 4.75f
-                        // "assets/Galaxsea-Starlight-Mono-v3_1.ttf" // fontSize 12f
+                // "assets/BoxedIn.ttf" // 12f
+                // "assets/Iosevka-Slab.ttf" // 5.4f
+                // "assets/Iosevka-Wide-Slab-Light.ttf" 5.25f
+                // "assets/Iosevka.ttf" 5.5f
+                // "assets/Iosevka-Light.ttf" 5.5f
+                // "assets/Iosevka-Slab-Light.ttf" 5.4f
+                // "assets/Iosevka-Slab-Thin.ttf" 5.4f
+                // "assets/Iosevka-Wide.ttf" 5.25f
+                // "assets/Iosevka-Wide-Slab.ttf" 5.25f (too high?)
+                // "assets/Iosevka-Wide-Light.ttf" 5.25f
+                // "assets/Iosevka-Wide-Slab-Light.ttf" 5.25f
+                // "assets/Galaxsea-Starlight-Mono-v3_1.ttf" 12f
+                // "assets/SourceCodePro-Medium.otf" // fontSize 6.5f
+                // "assets/DejaVuSansMono.ttf" // fontSize 4.75f
+                // "assets/Galaxsea-Starlight-Mono-v3_1.ttf" // fontSize 12f
                 //);
+                float fontSize = entry.value;
+                FileHandle fontFile = Gdx.files.local(params[3]);
                 Font font = Font.createFont(Font.TRUETYPE_FONT, fontFile.file()).deriveFont(Float.parseFloat(params[4]));
                 BufferedImage tImage = new BufferedImage(512, 512, BufferedImage.TYPE_4BYTE_ABGR);
                 Graphics2D tGraphics = tImage.createGraphics();
@@ -1507,7 +1506,6 @@ public class GlamerTool extends ApplicationAdapter {
                 if (gv2.getGlyphCode(0) != missing) {
                     gv2 = font.createGlyphVector(frc, tc);
                     bounds = gv2.getVisualBounds();
-                    //incomplete = false;
                 }
 
                 tc[0] = 'x';
@@ -1525,18 +1523,7 @@ public class GlamerTool extends ApplicationAdapter {
                     xBounds = gv2.getVisualBounds();
                 } else {
                     xBounds = gv2.getVisualBounds();
-                }/*
-            Character.UnicodeBlock ub;
-            for (int i = 32; i <= 0xffff; i++) {
-                if(gv.getGlyphCode(i) != missing)
-                {
-                    ub = Character.UnicodeBlock.of(i);
-                    if(ub != Character.UnicodeBlock.ARABIC
-                            && ub != Character.UnicodeBlock.ARABIC_PRESENTATION_FORMS_A
-                            && ub != Character.UnicodeBlock.ARABIC_PRESENTATION_FORMS_B)
-                        chars.add((char)i);
                 }
-            }*/
                 if (bounds == null)
                     bounds = xBounds.getBounds2D();
                 for (int i = 32; i <= 0xffff; i++) {
@@ -1546,7 +1533,7 @@ public class GlamerTool extends ApplicationAdapter {
                                 if (i != 32)
                                     break;
                             case Character.DIRECTIONALITY_LEFT_TO_RIGHT:
-                                if(i == '〱' || i == '〲') break;
+                                if (i == '〱' || i == '〲') break;
                             case Character.DIRECTIONALITY_EUROPEAN_NUMBER:
                             case Character.DIRECTIONALITY_EUROPEAN_NUMBER_SEPARATOR:
                             case Character.DIRECTIONALITY_EUROPEAN_NUMBER_TERMINATOR:
@@ -1556,21 +1543,16 @@ public class GlamerTool extends ApplicationAdapter {
                             case Character.DIRECTIONALITY_SEGMENT_SEPARATOR:
                                 if (Character.isSurrogate((char) i))
                                     continue;
-                                if (incomplete) {
-                                    tc[0] = (char) i;
-                                    gv2 = font.createGlyphVector(frc, tc);
-                                    if (gv2.getGlyphCode(0) != missing) {
-                                        chars.add((char) i);
-                                        bounds.add(gv2.getVisualBounds());
-                                    }
-                                } else {
+
+                                tc[0] = (char) i;
+                                gv2 = font.createGlyphVector(frc, tc);
+                                if (gv2.getGlyphCode(0) != missing) {
                                     chars.add((char) i);
+                                    bounds.add(gv2.getVisualBounds());
                                 }
                         }
                     }
                 }
-//            chars.clear();
-//            chars.addAll('x', 'X', '┼', '.');
                 int bw = (((2 << downscale) + (int) bounds.getWidth()) >> downscale) << downscale,
                         bh = (((2 << downscale) + (int) (bounds.getHeight())) >> downscale) << downscale,
                         width = bigSize / (bw + (2 << downscale)), height = bigSize / (bh + (2 << downscale)),
@@ -1682,7 +1664,99 @@ public class GlamerTool extends ApplicationAdapter {
         } catch (FontFormatException | IOException e) {
             e.printStackTrace();
         }
+    }
+    
+    public void createNormal(){
+        super.create();
+        try {
+            int mainSize = 1024,
+                    blockWidth = Integer.parseInt(params[11]), blockHeight = Integer.parseInt(params[12]);
+            String filename, baseName;
+            //for (int nm = 0; nm < filenames.length; nm++) {
+            filename = params[3];
+            baseName = filename.substring(Math.max(filename.lastIndexOf('/'),
+                    filename.lastIndexOf('\\')) + 1, filename.lastIndexOf('.'));
 
+            int width = mainSize / (blockWidth + 4), height = mainSize / ((blockHeight + 4) * 2);
+            {
+                FileHandle fontFile = Gdx.files.local(params[3]);
+                Font font = Font.createFont(Font.TRUETYPE_FONT, fontFile.file()).deriveFont(Float.parseFloat(params[4]));
+                CharArray shown = new CharArray(font.getNumGlyphs());
+                for (int i = 1; i < 65536; i++) {
+                    if(font.canDisplay(i))
+                        shown.add((char) i);
+                }
+                allChars = new String(shown.items, 0, shown.size);
+                
+                StringBuilder sb = new StringBuilder(0x10000);
+                sb.append("info face=\"").append(baseName).append("\" size=-").append(blockHeight)
+                        .append(" bold=0 italic=0 charset=\"\" unicode=1 stretchH=100 smooth=0 aa=1 padding=1,1,1,1 spacing=0,0 outline=0\n");
+                sb.append("common lineHeight=").append(blockHeight) // very tricky to get right
+                        .append(" base=").append(baseline)
+                        .append(" scaleW=1024 scaleH=512 pages=1 packed=0 alphaChnl=0 redChnl=4 greenChnl=4 blueChnl=4\n");
+                sb.append("page id=0 file=\"").append(baseName).append(".png\"\n");
+                sb.append("chars count=").append(allChars.length()+1).append('\n');
+                BufferedImage image = new BufferedImage(mainSize, mainSize / 2, BufferedImage.TYPE_4BYTE_ABGR), board;
+                Graphics2D g = image.createGraphics(), gb;
+                final Color clear = new Color(0, 0, 0, 0);
+                g.setColor(clear);
+                g.fillRect(0, 0, mainSize, mainSize);
+                board = new BufferedImage(blockWidth, blockHeight, BufferedImage.TYPE_4BYTE_ABGR);
+                gb = board.createGraphics();
+                int i = 0, max = allChars.length();
+                g.setColor(Color.WHITE);
+                g.setFont(font);
+                g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+                g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
+                g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+
+                char c;
+                for (int y = 0; y < height && i < max; y++) {
+                    for (int x = 0; x < width && i < max; x++) {
+                        if (x == 0 && y == 0) {
+                            gb.setColor(Color.WHITE);
+                            gb.fillRect(0, 0, blockWidth, blockHeight);
+                            g.drawImage(board,
+                                    x * (blockWidth + 2), //bw+(2<<downscale)
+                                    y * (blockHeight + 2), //bh+(2<<downscale)
+                                    null);
+                            //gb.drawString(String.valueOf(c), x * bw + 8, (y+1) * bh + 8);
+                            sb.append("char id=0")
+                                    .append(" x=").append((x * (blockWidth + 2)))
+                                    .append(" y=").append(y * (blockHeight + 2))
+                                    .append(" width=").append((blockWidth))
+                                    .append(" height=").append((blockHeight))
+                                    .append(" xoffset=-1 yOffset=-1 xadvance=").append((blockWidth))
+                                    .append(" page=0 chnl=15\n");
+                        } else {
+                            c = allChars.charAt(i++);
+                            g.setColor(Color.WHITE);
+                            g.drawString(String.valueOf(c),
+                                    x * (blockWidth + 2) + 1, 
+                                    y * (blockHeight + 2) + baseline); // + (1 << downscale)
+                            //gb.drawString(String.valueOf(c), x * bw + 8, (y+1) * bh + 8);
+                            sb.append("char id=").append((int) c)
+                                    .append(" x=").append((x * (blockWidth + 2)))
+                                    .append(" y=").append(y * (blockHeight + 2))
+                                    .append(" width=").append((blockWidth))
+                                    .append(" height=").append((blockHeight))
+                                    .append(" xoffset=-1 yOffset=-1 xadvance=").append((blockWidth))
+                                    .append(" page=0 chnl=15\n");
+                        }
+                    }
+                }
+                if (i < allChars.length())
+                    System.out.println("Too many chars!");
+                System.out.println("Showed " + i + " chars out of " + allChars.length());
+                ImageIO.write(image, "PNG", new File(fontFile.nameWithoutExtension() + ".png"));
+                Gdx.files.local(baseName + ".fnt").writeString(sb.toString(), false);
+                sb.setLength(0);
+                Gdx.files.local(baseName + "-contents.txt").writeString(allChars, false);
+                System.out.println("Done!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }
