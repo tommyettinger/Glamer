@@ -1669,7 +1669,7 @@ public class GlamerTool extends ApplicationAdapter {
     public void createNormal(){
         super.create();
         try {
-            int mainSize = 1024,
+            int mainWidth = 1024, mainHeight = 1024,
                     blockWidth = Integer.parseInt(params[11]), blockHeight = Integer.parseInt(params[12]);
             String filename, baseName;
             //for (int nm = 0; nm < filenames.length; nm++) {
@@ -1677,7 +1677,7 @@ public class GlamerTool extends ApplicationAdapter {
             baseName = filename.substring(Math.max(filename.lastIndexOf('/'),
                     filename.lastIndexOf('\\')) + 1, filename.lastIndexOf('.'));
 
-            int width = mainSize / (blockWidth + 2), height = mainSize / ((blockHeight + 2));
+            int width = mainWidth / (blockWidth + 2), height = mainHeight / ((blockHeight + 2));
             {
                 FileHandle fontFile = Gdx.files.local(params[3]);
                 Font font = Font.createFont(Font.TRUETYPE_FONT, fontFile.file()).deriveFont(Float.parseFloat(params[4]));
@@ -1693,25 +1693,32 @@ public class GlamerTool extends ApplicationAdapter {
                         .append(" bold=0 italic=0 charset=\"\" unicode=1 stretchH=100 smooth=0 aa=1 padding=1,1,1,1 spacing=0,0 outline=0\n");
                 sb.append("common lineHeight=").append(blockHeight) // very tricky to get right
                         .append(" base=").append(baseline)
-                        .append(" scaleW=1024 scaleH=1024 pages=1 packed=0 alphaChnl=0 redChnl=4 greenChnl=4 blueChnl=4\n");
+                        .append(" scaleW=").append(mainWidth).append(" scaleH=").append(mainHeight)
+                        .append(" pages=1 packed=0 alphaChnl=0 redChnl=4 greenChnl=4 blueChnl=4\n");
                 sb.append("page id=0 file=\"").append(baseName).append(".png\"\n");
                 sb.append("chars count=").append(allChars.length()+1).append('\n');
-                BufferedImage image = new BufferedImage(mainSize, mainSize, BufferedImage.TYPE_4BYTE_ABGR), board;
+                BufferedImage image = new BufferedImage(mainWidth, mainHeight, BufferedImage.TYPE_4BYTE_ABGR), board;
                 Graphics2D g = image.createGraphics(), gb;
                 final Color clear = new Color(0, 0, 0, 0);
                 g.setColor(clear);
-                g.fillRect(0, 0, mainSize, mainSize);
+                g.fillRect(0, 0, mainWidth, mainHeight);
                 board = new BufferedImage(blockWidth, blockHeight, BufferedImage.TYPE_4BYTE_ABGR);
                 gb = board.createGraphics();
                 int i = 0, max = allChars.length();
                 g.setColor(Color.WHITE);
                 g.setFont(font);
+                //// use these for vector fonts
                 g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
                 g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
                 g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
                 g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
                 g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+
+                //// use these for pixel fonts
+//                g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+//                g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+//                g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
 
                 char c;
                 for (int y = 0; y < height && i < max; y++) {
