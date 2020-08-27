@@ -1677,7 +1677,7 @@ public class GlamerTool extends ApplicationAdapter {
             baseName = filename.substring(Math.max(filename.lastIndexOf('/'),
                     filename.lastIndexOf('\\')) + 1, filename.lastIndexOf('.'));
 
-            int width = mainSize / (blockWidth + 4), height = mainSize / ((blockHeight + 4) * 2);
+            int width = mainSize / (blockWidth + 2), height = mainSize / ((blockHeight + 2) * 4);
             {
                 FileHandle fontFile = Gdx.files.local(params[3]);
                 Font font = Font.createFont(Font.TRUETYPE_FONT, fontFile.file()).deriveFont(Float.parseFloat(params[4]));
@@ -1693,10 +1693,10 @@ public class GlamerTool extends ApplicationAdapter {
                         .append(" bold=0 italic=0 charset=\"\" unicode=1 stretchH=100 smooth=0 aa=1 padding=1,1,1,1 spacing=0,0 outline=0\n");
                 sb.append("common lineHeight=").append(blockHeight) // very tricky to get right
                         .append(" base=").append(baseline)
-                        .append(" scaleW=1024 scaleH=512 pages=1 packed=0 alphaChnl=0 redChnl=4 greenChnl=4 blueChnl=4\n");
+                        .append(" scaleW=1024 scaleH=256 pages=1 packed=0 alphaChnl=0 redChnl=4 greenChnl=4 blueChnl=4\n");
                 sb.append("page id=0 file=\"").append(baseName).append(".png\"\n");
                 sb.append("chars count=").append(allChars.length()+1).append('\n');
-                BufferedImage image = new BufferedImage(mainSize, mainSize / 2, BufferedImage.TYPE_4BYTE_ABGR), board;
+                BufferedImage image = new BufferedImage(mainSize, mainSize / 4, BufferedImage.TYPE_4BYTE_ABGR), board;
                 Graphics2D g = image.createGraphics(), gb;
                 final Color clear = new Color(0, 0, 0, 0);
                 g.setColor(clear);
@@ -1749,6 +1749,16 @@ public class GlamerTool extends ApplicationAdapter {
                     System.out.println("Too many chars!");
                 System.out.println("Showed " + i + " chars out of " + allChars.length());
                 ImageIO.write(image, "PNG", new File(fontFile.nameWithoutExtension() + ".png"));
+                Graphics2D ig = image.createGraphics();
+                ig.setColor(Color.WHITE);
+                ig.setXORMode(Color.BLACK);
+                ig.fillRect(0, 0, image.getWidth(), image.getHeight());
+                BufferedImage image2 = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
+                ig = image2.createGraphics();
+                ig.setColor(Color.WHITE);
+                ig.fillRect(0, 0, image.getWidth(), image.getHeight());
+                ig.drawImage(image, 0, 0, Color.WHITE, null);
+                ImageIO.write(image2, "PNG", new File(fontFile.nameWithoutExtension() + "-preview.png"));
                 Gdx.files.local(baseName + ".fnt").writeString(sb.toString(), false);
                 sb.setLength(0);
                 Gdx.files.local(baseName + "-contents.txt").writeString(allChars, false);
