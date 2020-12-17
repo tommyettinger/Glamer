@@ -156,12 +156,12 @@ public class GlamerTool extends ApplicationAdapter {
     @Override
     public void create() {
 //        create_msdf_family("msdf");
-//        if(params[1].contains("mono") || params[1].contains("fixed")) 
-//            create_msdf("msdf");
-//        else
-//            create_msdf_variable("msdf");
-        //createFamily();
-        createNormal();
+        if(params[1].contains("mono") || params[1].contains("fixed"))
+            create_msdf("msdf");
+        else
+            create_msdf_variable("msdf");
+//        createFamily();
+//        createNormal();
     }
 
     // "msdfgen.exe -font " + filename + " " + codepoint + " -scale 2.5 -translate 2 4.5 -size 32 64 -o " + codepoint + ".png"
@@ -365,14 +365,14 @@ public class GlamerTool extends ApplicationAdapter {
                     System.out.println("Too many chars!");
                 System.out.println("Showed " + i + " chars out of " + allChars.length());
                 ImageIO.write(image, "PNG", new File(baseName + "-msdf.png"));
-                Gdx.files.local(baseName + "-msdf.fnt").writeString(sb.toString(), false);
+                Gdx.files.local(baseName + "-msdf.fnt").writeString(sb.toString(), false, "UTF-8");
                 sb.setLength(0);
 //            char cc;
 //            for (int j = 0; j < chars.size; j++) {
 //                cc = chars.get(j);
 //                sb.append("index: ").append(String.format("%04X", (int)cc)).append(" glyph: ").append(cc).append(" \n");
 //            }
-                Gdx.files.local(baseName + "-contents.txt").writeString(allChars, false);
+                Gdx.files.local(baseName + "-contents.txt").writeString(allChars, false, "UTF-8");
             }
             System.out.println("Done!");
         } catch (Exception e) {
@@ -579,14 +579,14 @@ public class GlamerTool extends ApplicationAdapter {
                     System.out.println("Too many chars!");
                 System.out.println("Showed " + i + " chars out of " + allChars.length());
                 ImageIO.write(image, "PNG", new File(baseName + "-msdf.png"));
-                Gdx.files.local(baseName + "-msdf.fnt").writeString(sb.toString(), false);
+                Gdx.files.local(baseName + "-msdf.fnt").writeString(sb.toString(), false, "UTF-8");
                 sb.setLength(0);
 //            char cc;
 //            for (int j = 0; j < chars.size; j++) {
 //                cc = chars.get(j);
 //                sb.append("index: ").append(String.format("%04X", (int)cc)).append(" glyph: ").append(cc).append(" \n");
 //            }
-                Gdx.files.local(baseName + "-contents.txt").writeString(allChars, false);
+                Gdx.files.local(baseName + "-contents.txt").writeString(allChars, false, "UTF-8");
             }
             System.out.println("Done!");
         } catch (Exception e) {
@@ -822,9 +822,9 @@ public class GlamerTool extends ApplicationAdapter {
 //                if (idx < allChars.length())
 //                    System.out.println("Too many chars?");
                 ImageIO.write(image, "PNG", new File(fonts[4] + "-msdf.png"));
-                Gdx.files.local(fonts[4] + "-msdf.fnt").writeString(sb.toString(), false);
+                Gdx.files.local(fonts[4] + "-msdf.fnt").writeString(sb.toString(), false, "UTF-8");
                 sb.setLength(0);
-                Gdx.files.local(fonts[4] + "-contents-msdf.txt").writeString(String.valueOf(regularChars.toArray()), false);
+                Gdx.files.local(fonts[4] + "-contents-msdf.txt").writeString(String.valueOf(regularChars.toArray()), false, "UTF-8");
                 System.out.println("Done!");
             }
         } catch (Exception e) {
@@ -931,14 +931,14 @@ public class GlamerTool extends ApplicationAdapter {
 //                if (i < allChars.length())
 //                    System.out.println("Too many chars!");
 //                ImageIO.write(image, "PNG", new File(baseName + "-msdf.png"));
-                Gdx.files.local(baseName + "-msdf.fnt").writeString(sb.toString(), false);
+                Gdx.files.local(baseName + "-msdf.fnt").writeString(sb.toString(), false, "UTF-8");
                 sb.setLength(0);
 //            char cc;
 //            for (int j = 0; j < chars.size; j++) {
 //                cc = chars.get(j);
 //                sb.append("index: ").append(String.format("%04X", (int)cc)).append(" glyph: ").append(cc).append(" \n");
 //            }
-                //Gdx.files.local(baseName + "-contents.txt").writeString(allChars, false);
+                Gdx.files.local(baseName + "-contents.txt").writeString(allChars, false, "UTF-8");
             }
             System.out.println("Done!");
         } catch (Exception e) {
@@ -1060,14 +1060,14 @@ public class GlamerTool extends ApplicationAdapter {
                 };
                 LookupOp op = new LookupOp(lookup, new RenderingHints(null));
                 ImageIO.write(op.filter(dfgi, null), "PNG", new File(fontFile.nameWithoutExtension() + "-distance-preview.png"));
-                Gdx.files.local(fontFile.nameWithoutExtension() + "-distance.fnt").writeString(sb.toString(), false);
+                Gdx.files.local(fontFile.nameWithoutExtension() + "-distance.fnt").writeString(sb.toString(), false, "UTF-8");
                 sb.setLength(0);
 //            char cc;
 //            for (int j = 0; j < chars.size; j++) {
 //                cc = chars.get(j);
 //                sb.append("index: ").append(String.format("%04X", (int)cc)).append(" glyph: ").append(cc).append(" \n");
 //            }
-                Gdx.files.local(fontFile.nameWithoutExtension() + "-contents.txt").writeString(String.valueOf(chars.toArray()), false);
+                Gdx.files.local(fontFile.nameWithoutExtension() + "-contents.txt").writeString(String.valueOf(chars.toArray()), false, "UTF-8");
             }
             System.out.println("Done!");
         } catch (FontFormatException e) {
@@ -1390,8 +1390,8 @@ public class GlamerTool extends ApplicationAdapter {
                 //use this instead for BoxedIn
                 //dfg.setSpread((float)Math.pow(2, downscale) * 3.5f * MathUtils.log(5f, 4f)); // MathUtils.log(5f, fontSize));
                 ImageIO.write(dfg.generateDistanceField(image), "PNG", new File(fonts[4] + "-distance.png"));
-                Gdx.files.local(fonts[4] + "-distance.fnt").writeString(sb.toString(), false);
-                Gdx.files.local(fonts[4] + "-contents.txt").writeString(String.valueOf(regularChars.toArray()), false);
+                Gdx.files.local(fonts[4] + "-distance.fnt").writeString(sb.toString(), false, "UTF-8");
+                Gdx.files.local(fonts[4] + "-contents.txt").writeString(String.valueOf(regularChars.toArray()), false, "UTF-8");
                 System.out.println("Done!");
             }
         } catch (FontFormatException | IOException e) {
@@ -1651,14 +1651,14 @@ public class GlamerTool extends ApplicationAdapter {
                 LookupOp op = new LookupOp(lookup, new RenderingHints(null));
                 ImageIO.write(op.filter(dfgi, null), "PNG", new File(fontFile.nameWithoutExtension() + "-distance-preview.png"));
 
-                Gdx.files.local(fontFile.nameWithoutExtension() + "-distance.fnt").writeString(sb.toString(), false);
+                Gdx.files.local(fontFile.nameWithoutExtension() + "-distance.fnt").writeString(sb.toString(), false, "UTF-8");
                 sb.setLength(0);
 //            char cc;
 //            for (int j = 0; j < chars.size; j++) {
 //                cc = chars.get(j);
 //                sb.append("index: ").append(String.format("%04X", (int)cc)).append(" glyph: ").append(cc).append(" \n");
 //            }
-                Gdx.files.local(fontFile.nameWithoutExtension() + "-contents.txt").writeString(String.valueOf(chars.toArray()), false);
+                Gdx.files.local(fontFile.nameWithoutExtension() + "-contents.txt").writeString(String.valueOf(chars.toArray()), false, "UTF-8");
                 System.out.println("Done!");
             }
         } catch (FontFormatException | IOException e) {
@@ -1769,9 +1769,9 @@ public class GlamerTool extends ApplicationAdapter {
                 ig.fillRect(0, 0, image.getWidth(), image.getHeight());
                 ig.drawImage(image, 0, 0, Color.WHITE, null);
                 ImageIO.write(image2, "PNG", new File(fontFile.nameWithoutExtension() + "-preview.png"));
-                Gdx.files.local(baseName + ".fnt").writeString(sb.toString(), false);
+                Gdx.files.local(baseName + ".fnt").writeString(sb.toString(), false, "UTF-8");
                 sb.setLength(0);
-                Gdx.files.local(baseName + "-contents.txt").writeString(allChars, false);
+                Gdx.files.local(baseName + "-contents.txt").writeString(allChars, false, "UTF-8");
                 System.out.println("Done!");
             }
         } catch (Exception e) {
