@@ -156,11 +156,11 @@ public class GlamerTool extends ApplicationAdapter {
     @Override
     public void create() {
 //        create_msdf_family("msdf");
-        if(params[1].contains("mono") || params[1].contains("fixed"))
-            create_msdf("msdf");
-        else
-            create_msdf_variable("msdf");
-//        createFamily();
+//        if(params[1].contains("mono") || params[1].contains("fixed"))
+//            create_msdf("msdf");
+//        else
+//            create_msdf_variable("msdf");
+        createFamily();
 //        createNormal();
     }
 
@@ -433,10 +433,7 @@ public class GlamerTool extends ApplicationAdapter {
                    baseline = 48, idx = 0, c, limit = allChars.length() - 1;
 
                 CharArray chars = new CharArray(1024), regularChars = new CharArray(1024);
-                IntIntMap
-                   widths = new IntIntMap(limit + 2 << 2),
-                   usedXs = new IntIntMap(limit + 2),
-                   usedYs = new IntIntMap(limit + 2);
+                IntIntMap widths = new IntIntMap(limit + 2 << 2);
                 BufferedImage tImage = new BufferedImage(256, 256, BufferedImage.TYPE_4BYTE_ABGR);
                 Graphics2D tGraphics = tImage.createGraphics();
                 tGraphics.setFont(font);
@@ -503,8 +500,6 @@ public class GlamerTool extends ApplicationAdapter {
                             c = 0;
                             g.setColor(Color.white);
                             g.fillRect(2, 2, blockWidth, blockHeight);
-                            usedXs.put(c, 2);
-                            usedYs.put(c, 2);
                             //gb.drawString(String.valueOf(c), x * bw + 8, (y+1) * bh + 8);
                             sb.append("char id=").append(c)
                                .append(" x=").append(2) //bw+(2<<downscale)
@@ -524,8 +519,6 @@ public class GlamerTool extends ApplicationAdapter {
                            2 + y * (4 + blockHeight), //bh+(2<<downscale)
                            null);
 
-                        usedXs.put(c, 2 + x * (4 + blockWidth));
-                        usedYs.put(c, 2 + y * (4 + blockHeight));
                         sb.append("char id=").append(c)
                            .append(" x=").append(2 + x * (4 + blockWidth)) //bw+(2<<downscale)
                            .append(" y=").append(2 + y * (4 + blockHeight))
@@ -1088,6 +1081,7 @@ public class GlamerTool extends ApplicationAdapter {
                 "assets/GoMono-BoldItalic.ttf",
                 "GoMono-Family", //5.33f
 */
+                /*
                 "assets/Iosevka_Full/Iosevka-Regular.ttf",
                 "assets/Iosevka_Full/Iosevka-Bold.ttf",
                 "assets/Iosevka_Full/Iosevka-Oblique.ttf",
@@ -1100,9 +1094,16 @@ public class GlamerTool extends ApplicationAdapter {
                 "assets/Iosevka_Full/Iosevka-Slab-Oblique.ttf",
                 "assets/Iosevka_Full/Iosevka-Slab-BoldOblique.ttf",
                 "Iosevka-Slab-Family", //2.66f
+                */
+
+                "Ubuntu-R.ttf",
+                "Ubuntu-B.ttf",
+                "Ubuntu-RI.ttf",
+                "Ubuntu-BI.ttf",
+                "Ubuntu", //2.7f
 
         };
-        float fontSize = 2.66f;
+        float fontSize = 2.7f * 0.25f;
 
         /*
         mapping.put("assets/Iosevka_Full/Iosevka-Bold.ttf", 2.55f);
@@ -1155,7 +1156,7 @@ public class GlamerTool extends ApplicationAdapter {
         // "assets/BoxedIn.ttf" // 12f
 
         try {
-            int downscale = 3, mainSize = 2048, bigSize = mainSize << downscale;
+            int downscale = 0, mainSize = 4096, bigSize = mainSize << downscale;
             {
                 BufferedImage image = new BufferedImage(bigSize, bigSize, BufferedImage.TYPE_4BYTE_ABGR);
                 Graphics2D g = image.createGraphics();
@@ -1172,77 +1173,97 @@ public class GlamerTool extends ApplicationAdapter {
                         Font.createFont(Font.TRUETYPE_FONT, fontFiles[2].file()).deriveFont(64f * fontSize),
                         Font.createFont(Font.TRUETYPE_FONT, fontFiles[3].file()).deriveFont(64f * fontSize),
                 };
-                BufferedImage tImage = new BufferedImage(512, 512, BufferedImage.TYPE_4BYTE_ABGR);
-                Graphics2D tGraphics = tImage.createGraphics();
-                tGraphics.setFont(font[0]);
-                FontRenderContext frc = tGraphics.getFontRenderContext();
-                char[] tc = new char[]{'\u253C'}, all = new char[0x4000];
-                for (char i = 0; i <= 0x3fff; i++) {
-                    all[i] = i;
-                }
-                int missing = font[0].getMissingGlyphCode();
-                GlyphVector gv = font[0].createGlyphVector(frc, all), gv2 = font[0].createGlyphVector(frc, tc);
-                Rectangle2D bounds = null, xBounds;
-                boolean incomplete = true;
+//                BufferedImage tImage = new BufferedImage(512, 512, BufferedImage.TYPE_4BYTE_ABGR);
+//                Graphics2D tGraphics = tImage.createGraphics();
+//                tGraphics.setFont(font[0]);
+//                FontRenderContext frc = tGraphics.getFontRenderContext();
+//                char[] tc = new char[]{'\u253C'}, all = new char[0x4000];
+//                for (char i = 0; i <= 0x3fff; i++) {
+//                    all[i] = i;
+//                }
+//                int missing = font[0].getMissingGlyphCode();
+//                GlyphVector gv = font[0].createGlyphVector(frc, all), gv2 = font[0].createGlyphVector(frc, tc);
+//                Rectangle2D bounds = null, xBounds;
+//                boolean incomplete = true;
+//                CharArray chars = new CharArray(1024), regularChars = new CharArray(1024);
+//                if (gv2.getGlyphCode(0) != missing) { // cross shaped box drawing char, very large
+//                    gv2 = font[0].createGlyphVector(frc, tc);
+//                    bounds = gv2.getVisualBounds();
+//                    incomplete = false;
+//                }
+//
+//                tc[0] = 'x';
+//                gv2 = font[0].createGlyphVector(frc, tc);
+//                if (gv2.getGlyphCode(0) == missing) {
+//                    tc[0] = 'X';
+//                    gv2 = font[0].createGlyphVector(frc, tc);
+//                    if (gv2.getGlyphCode(0) == missing)
+//                        throw new IllegalArgumentException("Font is missing both 'x' and 'X'; at least one is needed to judge metrics.");
+//                    xBounds = gv2.getVisualBounds();
+//                } else {
+//                    xBounds = gv2.getVisualBounds();
+//                }
+//
+//                if (bounds == null)
+//                    bounds = xBounds.getBounds2D();
+//                else
+//                    bounds = bounds.createUnion(xBounds.getBounds2D());
+//                final Color clear = new Color(0, 0, 0, 0);
+//                g.setColor(clear);
+//                g.fillRect(0, 0, bigSize, bigSize);
+//
+//                for (int face = 1; face < 4; face++) {
+//                    tGraphics.setFont(font[face]);
+//                    frc = tGraphics.getFontRenderContext();
+//                    tc[0] = '\u253C';
+//                    gv = font[face].createGlyphVector(frc, all);
+//                    gv2 = font[face].createGlyphVector(frc, tc);
+//                    if (gv2.getGlyphCode(0) != missing) {
+//                        gv2 = font[face].createGlyphVector(frc, tc);
+//                        bounds = bounds.createUnion(gv2.getVisualBounds());
+//                        incomplete = false;
+//                    }
+//
+//                    tc[0] = 'x';
+//                    gv2 = font[0].createGlyphVector(frc, tc);
+//                    if (gv2.getGlyphCode(0) == missing) {
+//                        tc[0] = 'X';
+//                        gv2 = font[0].createGlyphVector(frc, tc);
+//                        if (gv2.getGlyphCode(0) == missing)
+//                            throw new IllegalArgumentException("Font is missing both 'x' and 'X'; at least one is needed to judge metrics.");
+//                        xBounds = xBounds.createUnion(gv2.getVisualBounds());
+//                    } else {
+//                        xBounds = xBounds.createUnion(gv2.getVisualBounds());
+//                    }
+//                }
+                int idx = 0, c, limit = allChars.length() - 1, xBound = 7, yBound = 1;
                 CharArray chars = new CharArray(1024), regularChars = new CharArray(1024);
-                if (gv2.getGlyphCode(0) != missing) { // cross shaped box drawing char, very large
-                    gv2 = font[0].createGlyphVector(frc, tc);
-                    bounds = gv2.getVisualBounds();
-                    incomplete = false;
-                }
-
-                tc[0] = 'x';
-                gv2 = font[0].createGlyphVector(frc, tc);
-                if (gv2.getGlyphCode(0) == missing) {
-                    tc[0] = 'X';
-                    gv2 = font[0].createGlyphVector(frc, tc);
-                    if (gv2.getGlyphCode(0) == missing)
-                        throw new IllegalArgumentException("Font is missing both 'x' and 'X'; at least one is needed to judge metrics.");
-                    xBounds = gv2.getVisualBounds();
-                } else {
-                    xBounds = gv2.getVisualBounds();
-                }
-
-                if (bounds == null)
-                    bounds = xBounds.getBounds2D();
-                else
-                    bounds = bounds.createUnion(xBounds.getBounds2D());
-
-                for (int face = 1; face < 4; face++) {
-                    tGraphics.setFont(font[face]);
-                    frc = tGraphics.getFontRenderContext();
-                    tc[0] = '\u253C';
-                    gv = font[face].createGlyphVector(frc, all);
-                    gv2 = font[face].createGlyphVector(frc, tc);
-                    if (gv2.getGlyphCode(0) != missing) {
-                        gv2 = font[face].createGlyphVector(frc, tc);
-                        bounds = bounds.createUnion(gv2.getVisualBounds());
-                        incomplete = false;
-                    }
-
-                    tc[0] = 'x';
-                    gv2 = font[0].createGlyphVector(frc, tc);
-                    if (gv2.getGlyphCode(0) == missing) {
-                        tc[0] = 'X';
-                        gv2 = font[0].createGlyphVector(frc, tc);
-                        if (gv2.getGlyphCode(0) == missing)
-                            throw new IllegalArgumentException("Font is missing both 'x' and 'X'; at least one is needed to judge metrics.");
-                        xBounds = xBounds.createUnion(gv2.getVisualBounds());
-                    } else {
-                        xBounds = xBounds.createUnion(gv2.getVisualBounds());
-                    }
-                }
-                IntIntMap aliases = new IntIntMap(512);
+                IntIntMap aliases = new IntIntMap(512),
+                        widths = new IntIntMap(limit + 2 << 2);
                 IntSet aliased = new IntSet(512);
+
+                final Color clear = new Color(0, 0, 0, 0);
+                g.setColor(clear);
+                g.fillRect(0, 0, bigSize, bigSize);
+
+                BufferedImage tImage = new BufferedImage(256, 256, BufferedImage.TYPE_4BYTE_ABGR);
+                Graphics2D tGraphics = tImage.createGraphics();
+                tGraphics.setFont(font[3]);
+                FontRenderContext frc = tGraphics.getFontRenderContext();
+                char[] tc = new char[]{'X'};
+                GlyphVector gv2;
                 for (int face = 0; face < 4; face++) {
                     chars.add((char) (face << 14));
                     if(face == 0)
                         regularChars.add((char) 0);
-                    for (int i = 32; i <= 0x3fff; i++) {
-                        if (gv.getGlyphCode(i) != missing && Character.isDefined(i)) {
-                            switch (Character.getDirectionality(i)) {
+                    idx = 0;
+                    c = idx;
+                    while (c < 0x4000) {
+                        c = idx++;
+                        if (Character.isDefined(c) && font[face].canDisplay(c)) {
+                            switch (Character.getDirectionality(c)) {
                                 case Character.DIRECTIONALITY_WHITESPACE:
-                                    if (i != 32)
+                                    if (c != 32)
                                         break;
                                 case Character.DIRECTIONALITY_LEFT_TO_RIGHT:
                                 case Character.DIRECTIONALITY_EUROPEAN_NUMBER:
@@ -1252,91 +1273,68 @@ public class GlamerTool extends ApplicationAdapter {
                                 case Character.DIRECTIONALITY_OTHER_NEUTRALS:
                                 case Character.DIRECTIONALITY_UNDEFINED:
                                 case Character.DIRECTIONALITY_SEGMENT_SEPARATOR:
-                                    if (Character.isSurrogate((char) i))
+                                    if (Character.isSurrogate((char) c))
                                         continue;
-                                    if (incomplete) {
-                                        if (Character.UnicodeBlock.of(i).equals(Character.UnicodeBlock.BOX_DRAWING)) {
-                                            tc[0] = (char) (i & 0x3fff);
-                                            gv2 = font[face & 1].createGlyphVector(frc, tc); // we don't use italic box drawing chars
-                                            if (gv2.getGlyphCode(0) != missing) {
-                                                chars.add((char) (i | face << 14));
-                                                if(face == 0)
-                                                    regularChars.add((char)i);
-                                                bounds.add(gv2.getVisualBounds());
-                                                if(0 != (face & -2)) // only true if italic, which is aliased to regular or bold
-                                                {
-                                                    aliases.put((i | (face & 1) << 14), (i | face << 14));
-                                                    aliased.add((i | face << 14));
-                                                }
-                                            }
-                                        } else {
-                                            tc[0] = (char) (i & 0x3fff);
-                                            gv2 = font[face].createGlyphVector(frc, tc);
-                                            if (gv2.getGlyphCode(0) != missing) {
-                                                chars.add((char) (i | face << 14));
-                                                if(face == 0)
-                                                    regularChars.add((char)i);
-                                                bounds.add(gv2.getVisualBounds());
-                                            }
+                                    if (Character.UnicodeBlock.of(c).equals(Character.UnicodeBlock.BOX_DRAWING)) {
+                                        if (0 != (face & -2)) // only true if italic, which is aliased to regular or bold
+                                        {
+                                            aliases.put((c | (face & 1) << 14), (c | face << 14));
+                                            aliased.add((c | face << 14));
                                         }
-                                    } else {
-                                        if (Character.UnicodeBlock.of(i).equals(Character.UnicodeBlock.BOX_DRAWING)) {
-                                            if(0 != (face & -2)) // only true if italic, which is aliased to regular or bold
-                                            {
-                                                aliases.put((i | (face & 1) << 14), (i | face << 14));
-                                                aliased.add((i | face << 14));
-                                            }
-                                        }
-                                        chars.add((char) (i | face << 14));
-                                        if(face == 0)
-                                            regularChars.add((char)i);
-
+                                    }
+                                    char ac = (char) (c | face << 14);
+                                    chars.add(ac);
+                                    if (face == 0)
+                                        regularChars.add((char) c);
+                                    tc[0] = (char) (c);
+                                    gv2 = font[face].createGlyphVector(frc, tc);
+                                    if (c == 32)
+                                        widths.put(ac, 7);
+                                    else {
+                                        int w = (int) Math.ceil(gv2.getVisualBounds().getWidth());
+                                        xBound = Math.max(xBound, w);
+                                        yBound = Math.max(yBound, (int)Math.ceil(gv2.getVisualBounds().getHeight()));
+                                        widths.put(ac, w);
                                     }
                             }
                         }
                     }
                 }
-//            chars.clear();
-//            chars.addAll('x', 'X', '┼', '.');
-                int bw = (((2 << downscale) + (int) bounds.getWidth()) >> downscale) << downscale,
-                        bh = (((2 << downscale) + (int) (bounds.getHeight())) >> downscale) << downscale,
+                int bw = (((2 << downscale) + xBound) >> downscale) << downscale,
+                        bh = (((2 << downscale) + yBound) >> downscale) << downscale,
                         width = bigSize / (bw + (2 << downscale)), height = bigSize / (bh + (2 << downscale)),
-                        offTop = (int) (bounds.getMaxY() - xBounds.getMaxY()),
-                        baseline = (int) (bounds.getHeight() - xBounds.getMinY() + bounds.getMinY() + offTop); // + (1 << downscale)
-
-                System.out.println("bh: " + bh);
-                System.out.println("offTop: " + offTop);
-                System.out.println("baseline: " + baseline);
+                        baseline = font[0].getBaselineFor('x'); // + (1 << downscale)
 
                 StringBuilder sb = new StringBuilder(0x10000);
                 sb.append("info face=\"").append(fonts[4]).append("\" size=-24 bold=0 italic=0 charset=\"\" unicode=1 stretchH=100 smooth=0 aa=1 padding=1,1,1,1 spacing=0,0 outline=0\n");
                 sb.append("common lineHeight=").append((bh >> downscale)).append(" base=").append(baseline >> downscale).append(" scaleW=1024 scaleH=1024 pages=1 packed=0 alphaChnl=0 redChnl=4 greenChnl=4 blueChnl=4\n");
-                sb.append("page id=0 file=\"").append(fonts[4]).append("-distance.png\"\n");
+                sb.append("page id=0 file=\"").append(fonts[4]).append(".png\"\n");
                 sb.append("chars count=").append(chars.size).append('\n');
-                BufferedImage board = new BufferedImage(bw, bh, BufferedImage.TYPE_4BYTE_ABGR);
-                Graphics2D gb = board.createGraphics();
-                g.clearRect(0, 0, bigSize, bigSize);
-                gb.clearRect(0, 0, bw, bh);
-                gb.setColor(Color.white);
-                gb.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-                gb.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
-                gb.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+                g.setColor(clear);
+                g.fillRect(0, 0, bigSize, bigSize);
+                g.setColor(Color.white);
+                g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
+                g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
 
                 int i = 0, max = chars.size, face = -1;
-                char c, shown;
+                char shown;
                 for (int y = 0; y < height && i < max; y++) {
                     for (int x = 0; x < width && i < max; x++) {
                         c = chars.get(i++);
                         shown = (char)(c & 0x3fff);
                         if (shown == 0) {
                             ++face;
-                            gb.setFont(font[face]);
+                            g.setFont(font[face]);
                             if(face == 0) {
-                                gb.fillRect(0, 0, bw, bh);
-                                g.drawImage(board,
-                                        x * (bw + (2 << downscale)), //bw+(2<<downscale)
-                                        y * (bh + (2 << downscale)), //bh+(2<<downscale)
-                                        null);
+                                g.setColor(Color.WHITE);
+                                g.fillRect(x * (bw + (2 << downscale)),
+                                        y * (bh + (2 << downscale)),
+                                        bw, bh);
+//                                g.drawImage(board,
+//                                        x * (bw + (2 << downscale)), //bw+(2<<downscale)
+//                                        y * (bh + (2 << downscale)), //bh+(2<<downscale)
+//                                        null);
                             }
                             //gb.drawString(String.valueOf(c), x * bw + 8, (y+1) * bh + 8);
                             sb.append("char id=").append((int)c)
@@ -1347,21 +1345,27 @@ public class GlamerTool extends ApplicationAdapter {
                                     .append(" xoffset=-1 yOffset=-1 xadvance=").append(((bw) >> downscale))
                                     .append(" page=0 chnl=15\n");
                         } else if(!aliased.contains(c)) {
-                            gb.clearRect(0, 0, bw, bh);
-                            gb.drawString(String.valueOf(shown), 1 << downscale, baseline); // + (1 << downscale)
-                            // gb.drawString(String.valueOf(c), 0, baseline); // + (1 << downscale)
-                            g.drawImage(board,
-                                    x * (bw + (2 << downscale)), //bw+(2<<downscale)
-                                    y * (bh + (2 << downscale)), //bh+(2<<downscale)
-                                    null);
+                            g.setColor(Color.WHITE);
+                            g.drawString(String.valueOf(shown),
+                                    x * (bw + (2 << downscale)) + (1 << downscale),
+                                    y * (bh + (2 << downscale)) + baseline);
+//                            gb.clearRect(0, 0, bw, bh);
+//                            gb.setColor(Color.WHITE);
+//                            gb.drawString(String.valueOf(shown), 1 << downscale, baseline); // + (1 << downscale)
+//                            // gb.drawString(String.valueOf(c), 0, baseline); // + (1 << downscale)
+//                            g.drawImage(board,
+//                                    x * (bw + (2 << downscale)), //bw+(2<<downscale)
+//                                    y * (bh + (2 << downscale)), //bh+(2<<downscale)
+//                                    null);
                             //gb.drawString(String.valueOf(c), x * bw + 8, (y+1) * bh + 8);
-                            sb.append("char id=").append((int)c)
+                            sb.append("char id=").append(c)
                                     .append(" x=").append((x * (bw + (2 << downscale)) >> downscale)) //bw+(2<<downscale)
                                     .append(" y=").append(y * (bh + (2 << downscale)) >> downscale) //bh+(2<<downscale)
                                     .append(" width=").append((bw >> downscale)) //bw+(2<<downscale)
                                     .append(" height=").append((bh >> downscale))    //bh+(2<<downscale)
-                                    .append(" xoffset=-1 yOffset=-1 xadvance=").append(((bw) >> downscale))
+                                    .append(" xoffset=0 yOffset=-1 xadvance=").append(widths.get(c, -4) + 4)
                                     .append(" page=0 chnl=15\n");
+
                             if(aliases.containsKey(c))
                             {
                                 sb.append("char id=").append(aliases.get(c, c))
@@ -1369,7 +1373,7 @@ public class GlamerTool extends ApplicationAdapter {
                                         .append(" y=").append(y * (bh + (2 << downscale)) >> downscale) //bh+(2<<downscale)
                                         .append(" width=").append((bw >> downscale)) //bw+(2<<downscale)
                                         .append(" height=").append((bh >> downscale))    //bh+(2<<downscale)
-                                        .append(" xoffset=-1 yOffset=-1 xadvance=").append(((bw) >> downscale))
+                                        .append(" xoffset=0 yOffset=-1 xadvance=").append(widths.get(c, -4) + 4)
                                         .append(" page=0 chnl=15\n");
                             }
                         }
@@ -1382,15 +1386,16 @@ public class GlamerTool extends ApplicationAdapter {
                     System.out.println("Too many chars!");
                 System.out.println("Showed " + i + " chars out of " + chars.size);
 
-                //ImageIO.write(image, "PNG", new File(fontFile.nameWithoutExtension() + ".png"));
-                DistanceFieldGenerator dfg = new DistanceFieldGenerator();
-                dfg.setDownscale(1 << downscale);
-                dfg.setSpread((float) Math.pow(2, downscale) * 3.5f * MathUtils.log(5f, fontSize));
-
-                //use this instead for BoxedIn
-                //dfg.setSpread((float)Math.pow(2, downscale) * 3.5f * MathUtils.log(5f, 4f)); // MathUtils.log(5f, fontSize));
-                ImageIO.write(dfg.generateDistanceField(image), "PNG", new File(fonts[4] + "-distance.png"));
-                Gdx.files.local(fonts[4] + "-distance.fnt").writeString(sb.toString(), false, "UTF-8");
+                ImageIO.write(image, "PNG", new File(fonts[4] + ".png"));
+//                DistanceFieldGenerator dfg = new DistanceFieldGenerator();
+//                dfg.setDownscale(1 << downscale);
+//                dfg.setSpread((float) Math.pow(2, downscale) * 3.5f * MathUtils.log(5f, fontSize));
+//
+//                //use this instead for BoxedIn
+//                //dfg.setSpread((float)Math.pow(2, downscale) * 3.5f * MathUtils.log(5f, 4f)); // MathUtils.log(5f, fontSize));
+//                ImageIO.write(dfg.generateDistanceField(image), "PNG", new File(fonts[4] + "-distance.png"));
+//                Gdx.files.local(fonts[4] + "-distance.fnt").writeString(sb.toString(), false, "UTF-8");
+                Gdx.files.local(fonts[4] + ".fnt").writeString(sb.toString(), false, "UTF-8");
                 Gdx.files.local(fonts[4] + "-contents.txt").writeString(String.valueOf(regularChars.toArray()), false, "UTF-8");
                 System.out.println("Done!");
             }
