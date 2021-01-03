@@ -156,11 +156,11 @@ public class GlamerTool extends ApplicationAdapter {
     @Override
     public void create() {
 //        create_msdf_family("msdf");
-//        if(params[1].contains("mono") || params[1].contains("fixed"))
-//            create_msdf("msdf");
-//        else
-//            create_msdf_variable("msdf");
-        createFamily();
+        if(params[1].contains("mono") || params[1].contains("fixed"))
+            create_msdf("msdf");
+        else
+            create_msdf_variable("msdf");
+//        createFamily();
 //        createNormal();
     }
 
