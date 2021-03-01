@@ -298,7 +298,7 @@ public class GlamerTool extends ApplicationAdapter {
 //                                    .append(" y=").append(2) //bh+(2<<downscale)
 //                                    .append(" width=").append(blockWidth + 2) //bw+(2<<downscale)
 //                                    .append(" height=").append(blockHeight)
-//                                    .append(" xoffset=0 yOffset=-1 xadvance=").append(blockWidth + 2)
+//                                    .append(" xoffset=0 yoffset=-1 xadvance=").append(blockWidth + 2)
 //                                    .append(" page=0 chnl=15\n");
 //                            x++;
 //                        }
@@ -318,7 +318,7 @@ public class GlamerTool extends ApplicationAdapter {
 //                                .append(" y=").append(2 + y * (4 + blockHeight))
 //                                .append(" width=").append(blockWidth + 2) //bw+(2<<downscale)
 //                                .append(" height=").append(blockHeight)
-//                                .append(" xoffset=0 yOffset=-1 xadvance=").append(widths.get(c, -4) + 2)
+//                                .append(" xoffset=0 yoffset=-1 xadvance=").append(widths.get(c, -4) + 2)
 //                                .append(" page=0 chnl=15\n");
 //
 //                    }
@@ -339,7 +339,7 @@ public class GlamerTool extends ApplicationAdapter {
                                     .append(" y=").append(2 + y * (4 + blockHeight))
                                     .append(" width=").append(blockWidth) //bw+(2<<downscale)
                                     .append(" height=").append(blockHeight)
-                                    .append(" xoffset=0 yOffset=-1 xadvance=").append(blockWidth)
+                                    .append(" xoffset=0 yoffset=-1 xadvance=").append(blockWidth)
                                     .append(" page=0 chnl=15\n");
                         } else {
                             c = allChars.charAt(i++);
@@ -356,7 +356,7 @@ public class GlamerTool extends ApplicationAdapter {
                                     .append(" y=").append(2 + y * (4 + blockHeight))
                                     .append(" width=").append(blockWidth) //bw+(2<<downscale)
                                     .append(" height=").append(blockHeight)
-                                    .append(" xoffset=0 yOffset=-1 xadvance=").append(blockWidth)
+                                    .append(" xoffset=0 yoffset=-1 xadvance=").append(blockWidth)
                                     .append(" page=0 chnl=15\n");
                         }
                     }
@@ -506,7 +506,7 @@ public class GlamerTool extends ApplicationAdapter {
                                .append(" y=").append(2) //bh+(2<<downscale)
                                .append(" width=").append(blockWidth + 2) //bw+(2<<downscale)
                                .append(" height=").append(blockHeight)
-                               .append(" xoffset=0 yOffset=-1 xadvance=").append(blockWidth + 2)
+                               .append(" xoffset=0 yoffset=-1 xadvance=").append(blockWidth + 2)
                                .append(" page=0 chnl=15\n");
                             x++;
                         }
@@ -524,7 +524,7 @@ public class GlamerTool extends ApplicationAdapter {
                            .append(" y=").append(2 + y * (4 + blockHeight))
                            .append(" width=").append(blockWidth + 2) //bw+(2<<downscale)
                            .append(" height=").append(blockHeight)
-                           .append(" xoffset=0 yOffset=-1 xadvance=").append(widths.get(c, -4) + 4)
+                           .append(" xoffset=0 yoffset=-1 xadvance=").append(widths.get(c, -4) + 4)
                            .append(" page=0 chnl=15\n");
 
                     }
@@ -546,7 +546,7 @@ public class GlamerTool extends ApplicationAdapter {
 //                                    .append(" y=").append(2 + y * (4 + blockHeight))
 //                                    .append(" width=").append(blockWidth) //bw+(2<<downscale)
 //                                    .append(" height=").append(blockHeight)
-//                                    .append(" xoffset=0 yOffset=-1 xadvance=").append(blockWidth)
+//                                    .append(" xoffset=0 yoffset=-1 xadvance=").append(blockWidth)
 //                                    .append(" page=0 chnl=15\n");
 //                        } else {
 //                            c = allChars.charAt(i++);
@@ -563,7 +563,7 @@ public class GlamerTool extends ApplicationAdapter {
 //                                    .append(" y=").append(2 + y * (4 + blockHeight))
 //                                    .append(" width=").append(blockWidth) //bw+(2<<downscale)
 //                                    .append(" height=").append(blockHeight)
-//                                    .append(" xoffset=0 yOffset=-1 xadvance=").append(blockWidth)
+//                                    .append(" xoffset=0 yoffset=-1 xadvance=").append(blockWidth)
 //                                    .append(" page=0 chnl=15\n");
 //                        }
 //                    }
@@ -744,7 +744,7 @@ public class GlamerTool extends ApplicationAdapter {
 //                                .append(" y=").append(2 + y * (4 + blockHeight))
 //                                .append(" width=").append(blockWidth + 2) //bw+(2<<downscale)
 //                                .append(" height=").append(blockHeight)
-//                                .append(" xoffset=0 yOffset=-1 xadvance=").append(blockWidth + 2)
+//                                .append(" xoffset=0 yoffset=-1 xadvance=").append(blockWidth + 2)
 //                                .append(" page=0 chnl=15\n");
 //                    }
 //                }
@@ -772,7 +772,7 @@ public class GlamerTool extends ApplicationAdapter {
                                     .append(" y=").append(2) //bh+(2<<downscale)
                                     .append(" width=").append(blockWidth + 2) //bw+(2<<downscale)
                                     .append(" height=").append(blockHeight)
-                                    .append(" xoffset=0 yOffset=-1 xadvance=").append(blockWidth + 2)
+                                    .append(" xoffset=0 yoffset=-1 xadvance=").append(blockWidth + 2)
                                     .append(" page=0 chnl=15\n");
                         } else if(!aliased.contains(c)) {
                             String st = String.valueOf(shown);
@@ -791,7 +791,7 @@ public class GlamerTool extends ApplicationAdapter {
                                     .append(" y=").append(2 + y * (4 + blockHeight))
                                     .append(" width=").append(blockWidth + 2) //bw+(2<<downscale)
                                     .append(" height=").append(blockHeight)
-                                    .append(" xoffset=0 yOffset=-1 xadvance=").append(widths.get(c, -4) + 2)
+                                    .append(" xoffset=0 yoffset=-1 xadvance=").append(widths.get(c, -4) + 2)
                                     .append(" page=0 chnl=15\n");
                             if(aliases.containsKey(c))
                             {
@@ -802,7 +802,7 @@ public class GlamerTool extends ApplicationAdapter {
 //                                        .append(" y=").append(usedYs.get(cs, 2))
                                         .append(" width=").append(blockWidth + 2) //bw+(2<<downscale)
                                         .append(" height=").append(blockHeight)
-                                        .append(" xoffset=0 yOffset=-1 xadvance=").append(
+                                        .append(" xoffset=0 yoffset=-1 xadvance=").append(
                                                 widths.get(aliases.get(c, c), -4) + 2)
                                         .append(" page=0 chnl=15\n");
                             }
@@ -890,7 +890,7 @@ public class GlamerTool extends ApplicationAdapter {
                             .append(" width=").append(jsv.getInt("width")) //bw+(2<<downscale)
                             .append(" height=").append(jsv.getInt("height"))
                             .append(" xoffset=").append(jsv.getInt("xoffset"))
-                            .append(" yOffset=").append(jsv.getInt("yoffset"))
+                            .append(" yoffset=").append(jsv.getInt("yoffset"))
                             .append(" xadvance=").append(jsv.getInt("xadvance"))
                             .append(" page=0 chnl=15\n");
                 }
@@ -917,7 +917,7 @@ public class GlamerTool extends ApplicationAdapter {
 //                                .append(" y=").append(2 + y * (4 + blockHeight))
 //                                .append(" width=").append(blockWidth - 4) //bw+(2<<downscale)
 //                                .append(" height=").append(blockHeight)
-//                                .append(" xoffset=12 yOffset=-1 xadvance=").append(24)
+//                                .append(" xoffset=12 yoffset=-1 xadvance=").append(24)
 //                                .append(" page=0 chnl=15\n");
 //                    }
 //                }
@@ -1029,7 +1029,7 @@ public class GlamerTool extends ApplicationAdapter {
                                 .append(" y=").append((20 << downscale) + y * (blockHeight + (12 << downscale)) >> downscale) //bh+(2<<downscale)
                                 .append(" width=").append(((10 << downscale) + blockWidth >> downscale) + 1) //bw+(2<<downscale)
                                 .append(" height=").append(((10 << downscale) + blockHeight >> downscale))    //bh+(2<<downscale)
-                                .append(" xoffset=-1 yOffset=-1 xadvance=").append((((10 << downscale) + blockWidth) >> downscale))
+                                .append(" xoffset=-1 yoffset=-1 xadvance=").append((((10 << downscale) + blockWidth) >> downscale))
                                 .append(" page=0 chnl=15\n");
                     }
                 }
@@ -1342,7 +1342,7 @@ public class GlamerTool extends ApplicationAdapter {
                                     .append(" y=").append(0) //bh+(2<<downscale)
                                     .append(" width=").append((bw >> downscale)) //bw+(2<<downscale)
                                     .append(" height=").append((bh >> downscale))    //bh+(2<<downscale)
-                                    .append(" xoffset=-1 yOffset=-1 xadvance=").append(((bw) >> downscale))
+                                    .append(" xoffset=-1 yoffset=-1 xadvance=").append(((bw) >> downscale))
                                     .append(" page=0 chnl=15\n");
                         } else if(!aliased.contains(c)) {
                             g.setColor(Color.WHITE);
@@ -1363,7 +1363,7 @@ public class GlamerTool extends ApplicationAdapter {
                                     .append(" y=").append(y * (bh + (2 << downscale)) >> downscale) //bh+(2<<downscale)
                                     .append(" width=").append((bw >> downscale)) //bw+(2<<downscale)
                                     .append(" height=").append((bh >> downscale))    //bh+(2<<downscale)
-                                    .append(" xoffset=0 yOffset=-1 xadvance=").append(widths.get(c, -4) + 4)
+                                    .append(" xoffset=0 yoffset=-1 xadvance=").append(widths.get(c, -4) + 4)
                                     .append(" page=0 chnl=15\n");
 
                             if(aliases.containsKey(c))
@@ -1373,7 +1373,7 @@ public class GlamerTool extends ApplicationAdapter {
                                         .append(" y=").append(y * (bh + (2 << downscale)) >> downscale) //bh+(2<<downscale)
                                         .append(" width=").append((bw >> downscale)) //bw+(2<<downscale)
                                         .append(" height=").append((bh >> downscale))    //bh+(2<<downscale)
-                                        .append(" xoffset=0 yOffset=-1 xadvance=").append(widths.get(c, -4) + 4)
+                                        .append(" xoffset=0 yoffset=-1 xadvance=").append(widths.get(c, -4) + 4)
                                         .append(" page=0 chnl=15\n");
                             }
                         }
@@ -1608,7 +1608,7 @@ public class GlamerTool extends ApplicationAdapter {
                                     .append(" y=").append(y * (bh + (2 << downscale)) >> downscale) //bh+(2<<downscale)
                                     .append(" width=").append((bw >> downscale)) //bw+(2<<downscale)
                                     .append(" height=").append((bh >> downscale))    //bh+(2<<downscale)
-                                    .append(" xoffset=-1 yOffset=-1 xadvance=").append(((bw) >> downscale))
+                                    .append(" xoffset=-1 yoffset=-1 xadvance=").append(((bw) >> downscale))
                                     .append(" page=0 chnl=15\n");
                         } else {
                             c = chars.get(i++);
@@ -1625,7 +1625,7 @@ public class GlamerTool extends ApplicationAdapter {
                                     .append(" y=").append(y * (bh + (2 << downscale)) >> downscale) //bh+(2<<downscale)
                                     .append(" width=").append((bw >> downscale)) //bw+(2<<downscale)
                                     .append(" height=").append((bh >> downscale))    //bh+(2<<downscale)
-                                    .append(" xoffset=-1 yOffset=-1 xadvance=").append(((bw) >> downscale))
+                                    .append(" xoffset=-1 yoffset=-1 xadvance=").append(((bw) >> downscale))
                                     .append(" page=0 chnl=15\n");
                         }
                     }
@@ -1741,7 +1741,7 @@ public class GlamerTool extends ApplicationAdapter {
                                     .append(" y=").append(y * (blockHeight + 2))
                                     .append(" width=").append((blockWidth))
                                     .append(" height=").append((blockHeight))
-                                    .append(" xoffset=-1 yOffset=-1 xadvance=").append((blockWidth))
+                                    .append(" xoffset=-1 yoffset=-1 xadvance=").append((blockWidth))
                                     .append(" page=0 chnl=15\n");
                         } else {
                             c = allChars.charAt(i++);
@@ -1755,7 +1755,7 @@ public class GlamerTool extends ApplicationAdapter {
                                     .append(" y=").append(y * (blockHeight + 2))
                                     .append(" width=").append((blockWidth))
                                     .append(" height=").append((blockHeight))
-                                    .append(" xoffset=-1 yOffset=-1 xadvance=").append((blockWidth))
+                                    .append(" xoffset=-1 yoffset=-1 xadvance=").append((blockWidth))
                                     .append(" page=0 chnl=15\n");
                         }
                     }

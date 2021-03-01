@@ -22,7 +22,7 @@ dependencies {
 
 jar {
   archiveName "GlamerTool.jar"
-  from { configurations.compile.collect { zipTree(it) } }
+  from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
   manifest {
     attributes 'Main-Class': project.mainClassName
   }
